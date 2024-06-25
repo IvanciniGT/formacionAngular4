@@ -14,7 +14,7 @@ const ACABAR_DE_PINTAR_LETRITAS = 3;
 const RECOMENZAR_A_PINTAR_LETRITAS = 4;
 
 @Component({
-  selector: 'app-typewritter',
+  selector: 'typewriter',
   standalone: true,
   imports: [],
   templateUrl: './typewritter.component.html',
@@ -34,33 +34,46 @@ export class TypewritterComponent {
 
   private estado: number;
 
+  textoAMostrar: string = "";
+  posicionPorLaQueVoy: number = 0;
+
   constructor() {
     this.estado = INICIADO;
   }
 
+  ngOnInit() { // Esta función es llamada por Angular cuando el componente (La marquita HTML) se va a inyectar al DOM de mi página, antes de renderizarlo
+    if(this.initialDelay > 0) 
+      this.transicionar(COMENZAR_A_ESPERAR);
+    else
+      this.transicionar(COMENZAR_A_PINTAR_LETRITAS_DIRECTAMENTE);
+  }
+
   // Implementar la máquina de estados. COMPRUEBA QUE LAS TRANSICIONES SEAN CORRECTAS... Y DEJA EL ESTADO DEL COMPONENTE EN EL ESTADO CORRECTO
- 
-  transicionar(accion: number) {
+   transicionar(accion: number) {
     switch (accion) {
       case COMENZAR_A_ESPERAR:
-        this.ejecutarTransicion(ESPERANDO_PINTAR, INICIADO, this.comenzarAEsperar);
+        if(this.initialDelay <= 0) throw new Error("No se puede transicionar de " + this.estado + " a " + COMENZAR_A_ESPERAR + " si initialDelay es menor o igual a 0");
+        this.ejecutarTransicion(ESPERANDO_PINTAR, INICIADO, ()=>this.comenzarAEsperar() );
         break;
       case COMENZAR_A_PINTAR_LETRITAS_DIRECTAMENTE:
-        this.ejecutarTransicion(PINTANDO_LETRITAS, INICIADO, this.comenzarAPintarLetritasDirectamente);
+        if(this.initialDelay > 0) throw new Error("No se puede transicionar de " + this.estado + " a " + COMENZAR_A_PINTAR_LETRITAS_DIRECTAMENTE + " si initialDelay es mayor a 0");
+        this.ejecutarTransicion(PINTANDO_LETRITAS, INICIADO, this.comenzarAPintarLetritasDirectamente.bind(this));
         break;
       case COMENZAR_A_PINTAR_LETRITAS:
         this.ejecutarTransicion(PINTANDO_LETRITAS, ESPERANDO_PINTAR, this.comenzarAPintarLetritas);
         break;
       case ACABAR_DE_PINTAR_LETRITAS:
-        this.ejecutarTransicion(TERMINADO, PINTANDO_LETRITAS, this.acabarDePintarLetritas);
+        this.ejecutarTransicion(TERMINADO, PINTANDO_LETRITAS, ()=>this.acabarDePintarLetritas());
         break;
       case RECOMENZAR_A_PINTAR_LETRITAS:
-        this.ejecutarTransicion(PINTANDO_LETRITAS, TERMINADO, this.recomenzarAPintarLetritas);
+        if(!this.loop) throw new Error("No se puede transicionar de " + this.estado + " a " + RECOMENZAR_A_PINTAR_LETRITAS + " si loop es false");
+        this.ejecutarTransicion(PINTANDO_LETRITAS, TERMINADO, () => this.recomenzarAPintarLetritas() );
         break;
       default:
         console.error("Estado no válida");
     }
   }
+
   ejecutarTransicion(estadoDestino: number, estadoEsperado: number, funcionAsociada: Function) {
     if(this.estado !== estadoEsperado) {
       throw new Error("No se puede transicionar de " + this.estado + " a " + estadoDestino);
@@ -71,19 +84,32 @@ export class TypewritterComponent {
 
   // Declarar las funciones asociadas a cada transición
   comenzarAEsperar() {
-
-  }
+    setTimeout(() => this.transicionar(COMENZAR_A_PINTAR_LETRITAS), this.initialDelay);
+  } 
   comenzarAPintarLetritasDirectamente() {
-
+    this.irPintandoElTexto();
   }
-  comenzarAPintarLetritas() {
+  comenzarAPintarLetritas = () => this.irPintandoElTexto();
 
-  }
-  acabarDePintarLetritas() {
-
-  }
   recomenzarAPintarLetritas() {
+    this.posicionPorLaQueVoy = 0;
+    this.textoAMostrar = "";
+    this.irPintandoElTexto();
+  }
 
+  acabarDePintarLetritas() {
+    if(this.loop) 
+      this.transicionar(RECOMENZAR_A_PINTAR_LETRITAS)
+  }
+
+  irPintandoElTexto() {
+    this.posicionPorLaQueVoy++;
+    if(this.posicionPorLaQueVoy > this.text.length) {
+      this.transicionar(ACABAR_DE_PINTAR_LETRITAS);
+      return;
+    }
+    this.textoAMostrar = this.text.substring(0, this.posicionPorLaQueVoy);
+    setTimeout( () => this.irPintandoElTexto() , this.speed);
   }
 
 }

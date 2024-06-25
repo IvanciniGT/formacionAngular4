@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { UsuarioComponent } from "../usuario/usuario.component";
+import { TypewritterComponent } from "../typewritter/typewritter.component";
 
 // Esta anonotación le dice a Angular que esta clase es un componente: LENGUAJE DECLARATIVO
 @Component({
     selector: 'app-root', // Esta es la marca html que estoy definendo. Llegados a este punto, podré comenzar a usar la marca <app-root> en mi html
     standalone: true, // (1)
     templateUrl: './app.component.html', // Indico la plantilla que usaré para RENDERIZAR este componente
-    styleUrl: './app.component.css', // Asociando una hoja de estilos específica para este componente
-    imports: [UsuarioComponent]
+    styleUrl: './app.component.css',
+    imports: [UsuarioComponent, TypewritterComponent]
 })
 // Aquí va la lógica del componente
 export class AppComponent {
