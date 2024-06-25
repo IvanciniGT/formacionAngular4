@@ -25,7 +25,7 @@ Y en renderización se vería algo así:
 | cursor                | String    | Carácter que se quiere usar como cursor.                          | No          | "_"         |
 | cursorBlinkSpeed      | Number    | Velocidad a la que parpadea el cursor.                            | No          | 500         |
 | cursorClass           | String    | Clase CSS que se le quiere aplicar al cursor                      | No          | -           |
-| hideCursorOnComplete  | Boolean   | Indica si se quiere ocultar el cursor al finalizar la escritura   | No          | false       |
+| hideCursorOnComplete  | Boolean   | Indica si se quiere ocultar el cursor al finalizar la escritura   | No          | true        |
 | initialDelay          | Number    | Tiempo de espera antes de empezar a escribir                      | No          | 0           |
 | loop                  | Boolean   | Indica si se quiere repetir la escritura una vez finalizada       | No          | false       |
 
