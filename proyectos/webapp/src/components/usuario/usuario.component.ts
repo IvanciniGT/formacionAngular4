@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'usuario',
@@ -17,6 +17,9 @@ export class UsuarioComponent /*implements OnInit*/ {
   // Internamente eso se hace invocando el método render() de mi componente.
   nombre: string = 'Juan'; 
   edad: number = 0;
+
+  // Queremos que desde fuera, me puedan dar valores a alguna propiedad, por ejemplo el id
+  @Input() id!: number ; // Te la dan, te la dan! Te lo digo yo!
 
   constructor() { 
     // Cada vez que se use la marca HTML <usuario>, 
