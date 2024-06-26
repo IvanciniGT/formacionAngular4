@@ -22,8 +22,15 @@ const FORZAR_REINICIO_REPINTADO = 5;
   styleUrl: './typewritter.component.css'
 })
 export class TypewritterComponent {
-
-  @Input() text!: string;
+  private _text!: string;
+  
+  @Input() set text(value: string) {
+    const hayUnCambioReal = this._text !== undefined;
+    this._text = value;
+    if(hayUnCambioReal){
+      this.transicionar(FORZAR_REINICIO_REPINTADO);
+    }
+  }
   @Input() speed: number = 100;
   @Input() textClass: string = "";
   @Input() cursor: string = "_";
@@ -53,17 +60,22 @@ export class TypewritterComponent {
     else
       this.transicionar(COMENZAR_A_PINTAR_LETRITAS_DIRECTAMENTE);
   }
-
+/*
   ngOnChanges(changes: SimpleChanges) { // En versiones antiguas, era necesario implementar la interfaz OnChanges
     // Asi definida, esta funcion se dispararía cada vez que UNA PROPIEDAD DE ENTRADA CAMBIE
     // La primera ve que se asignan las propiedades de entrada, esta función se dispara
-    console.log("Ha cambiado una propiedad de entrada");
+    //console.log("Ha cambiado una propiedad de entrada");
     if (changes["text"] && changes["text"].previousValue !== undefined) { // Me aseguro que la prop que sste cambiando sea el texto, y que sea un cambio real, de un texto a otro... no de undefined a un texto
-      console.log("El texto ha cambiado, " + changes["text"].previousValue + " -> " + changes["text"].currentValue);
+      //console.log("El texto ha cambiado, " + changes["text"].previousValue + " -> " + changes["text"].currentValue);
       this.transicionar(FORZAR_REINICIO_REPINTADO);
     }
+    // En algunos casos esta función puede quedar muy sobrecargada.
+    // Mira si ha cambiado el parametro 1.
+    // Mira si ha cambiado el parametro 2.
+    // Mira si ha cambiado el parametro 3.
+    // Lo podemos gestionar de otra forma.. basado en el concepto de props de JS
   }
-
+*/
   // Implementar la máquina de estados. COMPRUEBA QUE LAS TRANSICIONES SEAN CORRECTAS... Y DEJA EL ESTADO DEL COMPONENTE EN EL ESTADO CORRECTO
   private transicionar(accion: number) {
     switch (accion) {
@@ -141,11 +153,11 @@ export class TypewritterComponent {
 
   private irPintandoElTexto() {
     this.posicionPorLaQueVoy++;
-    if (this.posicionPorLaQueVoy > this.text.length) {
+    if (this.posicionPorLaQueVoy > this._text.length) {
       this.transicionar(ACABAR_DE_PINTAR_LETRITAS);
       return;
     }
-    this.textoAMostrar = this.text.substring(0, this.posicionPorLaQueVoy); // En automático, al tocar esta variable que uso en el html, se re renderiza el componente (Me lo regala angular = GUAY !)
+    this.textoAMostrar = this._text.substring(0, this.posicionPorLaQueVoy); // En automático, al tocar esta variable que uso en el html, se re renderiza el componente (Me lo regala angular = GUAY !)
     setTimeout(() => this.irPintandoElTexto(), this.speed);
   }
 
