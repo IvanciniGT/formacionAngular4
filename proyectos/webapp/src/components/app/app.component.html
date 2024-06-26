@@ -11,22 +11,27 @@ debe procesarse como si fuera código TS
 <usuario [id]="300 +100"></usuario>
 
 <br>
-
+<!--
 <typewriter text="Mi super máquina de escribir automática"></typewriter>
 
 <br>
 
-<typewriter [text]="'Mi super máquina de escribir ' + 'automática'"
-    [speed]="200"
-    cursor="_"
-    [hideCursorOnComplete]="false"
-    textClass="text"
-    cursorClass="cursor"
-></typewriter>
-
+<h2>{{this.texto}}</h2>
 <br>
 
 <typewriter text="Mi super máquina de escribir automática archilofactica"
     [loop]="true"
     [speed]="100"
 ></typewriter>
+
+-->
+
+<typewriter 
+    [text]="this.texto"
+    [speed]="80"
+    cursor="_"
+    [hideCursorOnComplete]="false"
+    textClass="text"
+    cursorClass="cursor"
+></typewriter>
+

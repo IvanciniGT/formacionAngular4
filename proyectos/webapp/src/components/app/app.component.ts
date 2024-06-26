@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { UsuarioComponent } from "../usuario/usuario.component";
 import { TypewritterComponent } from "../typewritter/typewritter.component";
 
@@ -11,7 +11,8 @@ import { TypewritterComponent } from "../typewritter/typewritter.component";
     imports: [UsuarioComponent, TypewritterComponent]
 })
 // Aquí va la lógica del componente
-export class AppComponent {
+export class AppComponent /*implements AfterViewInit*/{
+       texto: string = "Soy un texto superguay";
 /*
   Para que alguien use esta clase, deberá INSTANCIARLA: new AppComponent()
   Tengo escrito yo eso por algún lao???? NO
@@ -24,12 +25,23 @@ export class AppComponent {
   Que hay que aprender:
   - constructor() -> Se ejecuta cuando se instancia el componente
          v
-  - ngOnInit() -> Se ejecuta cuando el componente se inicia
+  - ngOnInit() -> Se ejecuta cuando el componente se inicia. INICIALIAZCION DE DATOS
+         v     
+   -ngAfterViewInit() -> Se ejecuta cuando el componente ya se ve por pantalla: COSAS QUE QUIERO QUE OCURRAN POR PANTALLA
          v
   - ngOnChanges() -> Se ejecuta cuando cambian las propiedades de entrada
          v
   - ngOnDestroy() -> Se ejecuta cuando el componente se destruye
 */
+       ngAfterViewInit() { // Se invoca 1 vez después de que el componente haya sido pinchado en el dom del navegador... y ya se vea por pantalla
+              console.log("El componente ya se ve por pantalla");
+              setTimeout(() => {
+                     console.log("Han pasado 5 segundos... cambio el texto");
+                     this.texto = "Soy otro texto más superguay";
+              }, 5000);
+       }
+
+
 }
 
 /*

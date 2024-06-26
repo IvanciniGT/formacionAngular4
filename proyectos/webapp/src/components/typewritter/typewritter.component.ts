@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, SimpleChanges } from '@angular/core';
 
 // Estados
 const INICIADO = 0;
@@ -12,6 +12,7 @@ const COMENZAR_A_PINTAR_LETRITAS_DIRECTAMENTE = 1;
 const COMENZAR_A_PINTAR_LETRITAS = 2;
 const ACABAR_DE_PINTAR_LETRITAS = 3;
 const RECOMENZAR_A_PINTAR_LETRITAS = 4;
+const FORZAR_REINICIO_REPINTADO = 5;
 
 @Component({
   selector: 'typewriter',
@@ -22,15 +23,18 @@ const RECOMENZAR_A_PINTAR_LETRITAS = 4;
 })
 export class TypewritterComponent {
 
-  @Input() text!: string;                           // OK
-  @Input() speed: number = 100;                     // OK
+  @Input() text!: string;
+  @Input() speed: number = 100;
   @Input() textClass: string = "";
-  @Input() cursor: string = "_";                    // OK
-  @Input() cursorBlinkSpeed: number = 500;          // OK
+  @Input() cursor: string = "_";
+  @Input() cursorBlinkSpeed: number = 500;
   @Input() cursorClass: string = "";
-  @Input() hideCursorOnComplete: boolean = true;    // OK
-  @Input() initialDelay: number = 0;                // OK
-  @Input() loop: boolean = false;                   // OK
+  @Input() hideCursorOnComplete: boolean = true;
+  @Input() initialDelay: number = 0;
+  @Input() loop: boolean = false;
+
+  // Las propiedades INPUT se asignan al inicializarse el componente
+  // Después, en nuestro caso, queremos permitir que se puedan cambiar (el texto: `text`)
 
   private estado: number;
   private posicionPorLaQueVoy: number = 0;
@@ -48,6 +52,16 @@ export class TypewritterComponent {
       this.transicionar(COMENZAR_A_ESPERAR);
     else
       this.transicionar(COMENZAR_A_PINTAR_LETRITAS_DIRECTAMENTE);
+  }
+
+  ngOnChanges(changes: SimpleChanges) { // En versiones antiguas, era necesario implementar la interfaz OnChanges
+    // Asi definida, esta funcion se dispararía cada vez que UNA PROPIEDAD DE ENTRADA CAMBIE
+    // La primera ve que se asignan las propiedades de entrada, esta función se dispara
+    console.log("Ha cambiado una propiedad de entrada");
+    if (changes["text"] && changes["text"].previousValue !== undefined) { // Me aseguro que la prop que sste cambiando sea el texto, y que sea un cambio real, de un texto a otro... no de undefined a un texto
+      console.log("El texto ha cambiado, " + changes["text"].previousValue + " -> " + changes["text"].currentValue);
+      this.transicionar(FORZAR_REINICIO_REPINTADO);
+    }
   }
 
   // Implementar la máquina de estados. COMPRUEBA QUE LAS TRANSICIONES SEAN CORRECTAS... Y DEJA EL ESTADO DEL COMPONENTE EN EL ESTADO CORRECTO
@@ -73,15 +87,23 @@ export class TypewritterComponent {
         break;
       case RECOMENZAR_A_PINTAR_LETRITAS:
         if (!this.loop) throw new Error("No se puede transicionar de " + this.estado + " a " + RECOMENZAR_A_PINTAR_LETRITAS + " si loop es false");
-        this.ejecutarTransicion(PINTANDO_LETRITAS, TERMINADO, () => this.recomenzarAPintarLetritas());
+        this.ejecutarTransicion(PINTANDO_LETRITAS,TERMINADO, () => this.recomenzarAPintarLetritas());
+        break;
+      case FORZAR_REINICIO_REPINTADO:
+        this.ejecutarTransicion(PINTANDO_LETRITAS, [TERMINADO, ESPERANDO_PINTAR, PINTANDO_LETRITAS], () => this.recomenzarAPintarLetritas());
         break;
       default:
         console.error("Estado no válida");
     }
   }
 
-  private ejecutarTransicion(estadoDestino: number, estadoEsperado: number, funcionAsociada: Function) {
-    if (this.estado !== estadoEsperado) {
+  private ejecutarTransicion(estadoDestino: number, estadoEsperado: number | number[], funcionAsociada: Function) {
+    if (Array.isArray(estadoEsperado)) {
+      if (!estadoEsperado.includes(this.estado)) {
+        throw new Error("No se puede transicionar de " + this.estado + " a " + estadoDestino);
+      }
+    }
+    else if (this.estado !== estadoEsperado) {
       throw new Error("No se puede transicionar de " + this.estado + " a " + estadoDestino);
     }
     this.estado = estadoDestino;
@@ -99,9 +121,9 @@ export class TypewritterComponent {
   }
 
   private comenzarAPintarLetritas = () => {
-                                            this.comenzarParpadeoDelCursor();
-                                            this.irPintandoElTexto();
-                                          }
+    this.comenzarParpadeoDelCursor();
+    this.irPintandoElTexto();
+  }
 
   private recomenzarAPintarLetritas() {
     this.posicionPorLaQueVoy = 0;
@@ -129,17 +151,17 @@ export class TypewritterComponent {
 
   // El parpadeo del cursor lo podemos gestionar mediante un estilo css: visibility: hidden; visibility: visible;
   // Solamente parpadeamos cuando cursorBlinkSpeed sea mayor a 0.
-  private comenzarParpadeoDelCursor(){
-    if(this.cursorBlinkSpeed > 0){
-        // Quiero que se vaya cambiando la variable mostrarCursor cada X tiempo... de forma regular (con una periodicidad)
-        this.tareaDeParpadeoDelCursor=setInterval( ()=> this.mostrarCursor = !this.mostrarCursor, this.cursorBlinkSpeed );
+  private comenzarParpadeoDelCursor() {
+    if (this.cursorBlinkSpeed > 0) {
+      // Quiero que se vaya cambiando la variable mostrarCursor cada X tiempo... de forma regular (con una periodicidad)
+      this.tareaDeParpadeoDelCursor = setInterval(() => this.mostrarCursor = !this.mostrarCursor, this.cursorBlinkSpeed);
     }
   }
 
-  private finalizarParpadeoDelCursor(){
-    if(this.tareaDeParpadeoDelCursor){ // Siempre que hago un clearInterval, me aseguro de que el interval exista
-    // En JS hay un tipo especial de if, en el que solo pongo la variable... no pongo condició.
-    // En estos casos, lo  que JS comprueba es si la variable tiene asignado o no un valor (undefined o no)
+  private finalizarParpadeoDelCursor() {
+    if (this.tareaDeParpadeoDelCursor) { // Siempre que hago un clearInterval, me aseguro de que el interval exista
+      // En JS hay un tipo especial de if, en el que solo pongo la variable... no pongo condició.
+      // En estos casos, lo  que JS comprueba es si la variable tiene asignado o no un valor (undefined o no)
       clearInterval(this.tareaDeParpadeoDelCursor); // Anular el temporizador... ya no se sigue ejecutando
     }
     this.mostrarCursor = !this.hideCursorOnComplete; // Dejo o no el cursor mostrandose, en base al valor de hideCursorOnComplete
@@ -150,5 +172,5 @@ export class TypewritterComponent {
 
 // Principios SOLID DE DESARROLLO DE SOFTWARE:
 // S: Principio de responsabilidad única (Single Responsability Principle)
-  // Un componente (clase, función, módulo, paquete) solo debe tener UNA UNICA RESPONSABILIDAD y por ende una razón para cambiar
+// Un componente (clase, función, módulo, paquete) solo debe tener UNA UNICA RESPONSABILIDAD y por ende una razón para cambiar
 // D: Principio de inversión de dependencias

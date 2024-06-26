@@ -1,0 +1,13 @@
+:host ::ng-deep span.text{
+    font-family: Arial;
+}
+
+:host ::ng-deep span.cursor{
+    color: red;
+}
+/*
+Los estilos que se definen en un componente, aplican por defecto SOLO a ese componente... pero no a SUBCOMPONENTES
+GUAY. Pero no siempre es lo que quiero
+Si quiero forzar que un estilo sea heredable por los subcomponentes: :host ::ng-deep
+Cuidado.... porque puedo machar estilos definidos por debajo.
+*/
