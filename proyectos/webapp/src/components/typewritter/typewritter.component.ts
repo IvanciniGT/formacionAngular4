@@ -46,6 +46,7 @@ export class TypewritterComponent {
   private estado: number;
   private posicionPorLaQueVoy: number = 0;
   private tareaDeParpadeoDelCursor: any;
+  private tareaDeEsperaOPintado: any;
 
   textoAMostrar: string = "";
   mostrarCursor: boolean = true;
@@ -124,7 +125,7 @@ export class TypewritterComponent {
 
   // Declarar las funciones asociadas a cada transición
   private comenzarAEsperar() {
-    setTimeout(() => this.transicionar(COMENZAR_A_PINTAR_LETRITAS), this.initialDelay);
+    this.tareaDeEsperaOPintado=setTimeout(() => this.transicionar(COMENZAR_A_PINTAR_LETRITAS), this.initialDelay);
   }
 
   private comenzarAPintarLetritasDirectamente() {
@@ -141,6 +142,7 @@ export class TypewritterComponent {
     this.posicionPorLaQueVoy = 0;
     this.textoAMostrar = "";
     this.mostrarCursor = true;
+    this.anularTareasProgramadas();
     this.comenzarParpadeoDelCursor();
     this.irPintandoElTexto();
   }
@@ -158,7 +160,7 @@ export class TypewritterComponent {
       return;
     }
     this.textoAMostrar = this._text.substring(0, this.posicionPorLaQueVoy); // En automático, al tocar esta variable que uso en el html, se re renderiza el componente (Me lo regala angular = GUAY !)
-    setTimeout(() => this.irPintandoElTexto(), this.speed);
+    this.tareaDeEsperaOPintado=setTimeout(() => this.irPintandoElTexto(), this.speed);
   }
 
   // El parpadeo del cursor lo podemos gestionar mediante un estilo css: visibility: hidden; visibility: visible;
@@ -171,13 +173,31 @@ export class TypewritterComponent {
   }
 
   private finalizarParpadeoDelCursor() {
-    if (this.tareaDeParpadeoDelCursor) { // Siempre que hago un clearInterval, me aseguro de que el interval exista
-      // En JS hay un tipo especial de if, en el que solo pongo la variable... no pongo condició.
-      // En estos casos, lo  que JS comprueba es si la variable tiene asignado o no un valor (undefined o no)
-      clearInterval(this.tareaDeParpadeoDelCursor); // Anular el temporizador... ya no se sigue ejecutando
+    if(this.hideCursorOnComplete){
+      this.mostrarCursor = false;
+      if (this.tareaDeParpadeoDelCursor) { // Siempre que hago un clearInterval, me aseguro de que el interval exista
+        // En JS hay un tipo especial de if, en el que solo pongo la variable... no pongo condició.
+        // En estos casos, lo  que JS comprueba es si la variable tiene asignado o no un valor (undefined o no)
+        clearInterval(this.tareaDeParpadeoDelCursor); // Anular el temporizador... ya no se sigue ejecutando
+      }
     }
-    this.mostrarCursor = !this.hideCursorOnComplete; // Dejo o no el cursor mostrandose, en base al valor de hideCursorOnComplete
-    // TODO: Estéticamente va a quedar raro... Nos va a interesar otro comportamiento
+  }
+
+  // Podría ocurrir que los interval o los timeout, que se han configurado en el navegador,
+  // sigan ejecutándose aunque el componente ya no esté en la página
+  onDestroy() {
+    this.anularTareasProgramadas();
+  }
+
+  anularTareasProgramadas() {
+    if(this.tareaDeEsperaOPintado){
+      clearTimeout(this.tareaDeEsperaOPintado);
+      this.tareaDeEsperaOPintado = undefined;
+    }
+    if(this.tareaDeParpadeoDelCursor){
+      clearInterval(this.tareaDeParpadeoDelCursor);
+      this.tareaDeParpadeoDelCursor = undefined;
+    }
   }
 
 }
