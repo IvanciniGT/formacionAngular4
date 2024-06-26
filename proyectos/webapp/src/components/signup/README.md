@@ -56,15 +56,22 @@ enviar_datos_al_servidor: EN_ESPERA_DE_CONFIRMACION -> EN_ESPERA_DE_RESPUESTA
 recibir_respuesta_ok: EN_ESPERA_DE_RESPUESTA -> RESPUESTA_OK
 recibir_respuesta_ko: EN_ESPERA_DE_RESPUESTA -> RESPUESTA_KO
 
-
-
-
-App 
- - Menu
- - Cabecera
- - HUECO 
-   - Formulario de busqueda
-   - Formulario de alta
-   - Panel de detalle
-     - Usuario
- - FormularioDeSignup
+```mermaid
+stateDiagram-v2
+    [*] --> inicio
+    inicio --> presentacion: comenzar
+    presentacion --> en_espera_de_nombre: pedir_nombre
+    en_espera_de_nombre --> en_espera_de_email: pedir_email
+    en_espera_de_nombre --> nombre_invalido: marcar_nombre_como_invalido
+    nombre_invalido --> en_espera_de_email: pedir_nombre
+    en_espera_de_email --> en_espera_de_fecha_nacimiento: pedir_fecha_nacimiento
+    en_espera_de_email --> email_invalido: marcar_email_como_invalido
+    email_invalido --> en_espera_de_fecha_nacimiento: pedir_email
+    en_espera_de_fecha_nacimiento --> en_espera_de_confirmacion: solicitar_confirmacion
+    en_espera_de_fecha_nacimiento --> fecha_de_nacimiento_invalida: marcar_fecha_nacimiento_como_invalida
+    fecha_de_nacimiento_invalida --> en_espera_de_confirmacion: pedir_fecha_nacimiento
+    en_espera_de_confirmacion --> en_espera_de_respuesta: enviar_datos_al_servidor
+    en_espera_de_confirmacion --> en_espera_de_nombre: reiniciar
+    en_espera_de_respuesta --> respuesta_ok: recibir_respuesta_ok
+    en_espera_de_respuesta --> respuesta_ko: recibir_respuesta_ko
+```

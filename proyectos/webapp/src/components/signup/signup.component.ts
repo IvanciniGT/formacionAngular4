@@ -28,6 +28,7 @@ const SOLICITAR_CONFIRMACION = 7;
 const ENVIAR_DATOS_AL_SERVIDOR = 8;
 const RECIBIR_RESPUESTA_OK = 9;
 const RECIBIR_RESPUESTA_KO = 10;
+const VOLVER_A_COMENZAR = 11;
 
 @Component({
   selector: 'signup',
@@ -38,4 +39,80 @@ const RECIBIR_RESPUESTA_KO = 10;
 })
 export class SignupComponent {
 
+  nombre?:string;
+  email?:string;
+  fechaNacimiento?:string;
+  motivoRechazo?:string;
+  estado:number;
+
+  constructor() {
+    this.estado = INICIO;
+  }
+
+  private transicionar(transicion: number) {
+    switch (transicion) {
+      case COMENZAR_PRESENTACION:
+        this.ejecutarTransicion(INICIO, PRESENTACION, () => this.comenzarPresentacion());
+        break;
+      case PEDIR_NOMBRE:
+        this.ejecutarTransicion(PRESENTACION, EN_ESPERA_DE_NOMBRE, ()=>this.pedirNombre());
+        break;
+      case PEDIR_EMAIL:
+        this.ejecutarTransicion([EN_ESPERA_DE_NOMBRE, NOMBRE_INVALIDO], EN_ESPERA_DE_EMAIL,()=>this.pedirEmail());
+        break;
+      case PEDIR_FECHA_NACIMIENTO:
+        this.ejecutarTransicion([EN_ESPERA_DE_EMAIL, EMAIL_INVALIDO], EN_ESPERA_DE_FECHA_NACIMIENTO, ()=>this.pedirFechaNacimiento());
+        break;
+      case MARCAR_NOMBRE_COMO_INVALIDO:
+        this.ejecutarTransicion(EN_ESPERA_DE_NOMBRE, NOMBRE_INVALIDO, ()=>this.marcarNombreComoInvalido());
+        break;
+      case MARCAR_EMAIL_COMO_INVALIDO:
+        this.ejecutarTransicion(EN_ESPERA_DE_EMAIL, EMAIL_INVALIDO, ()=>this.marcarEmailComoInvalido());
+        break;
+      case MARCAR_FECHA_NACIMIENTO_COMO_INVALIDA:
+        this.ejecutarTransicion(EN_ESPERA_DE_FECHA_NACIMIENTO, FECHA_DE_NACIMIENTO_INVALIDA, ()=>this.marcarFechaNacimientoComoInvalida());
+        break;
+      case SOLICITAR_CONFIRMACION:
+        this.ejecutarTransicion([EN_ESPERA_DE_FECHA_NACIMIENTO, FECHA_DE_NACIMIENTO_INVALIDA], EN_ESPERA_DE_CONFIRMACION, ()=>this.solicitarConfirmacion());
+        break;
+      case ENVIAR_DATOS_AL_SERVIDOR:
+        this.ejecutarTransicion(EN_ESPERA_DE_CONFIRMACION, EN_ESPERA_DE_RESPUESTA, ()=>this.enviarDatosAlServidor());
+        break;
+      case RECIBIR_RESPUESTA_OK:
+        this.ejecutarTransicion(EN_ESPERA_DE_RESPUESTA, RESPUESTA_OK, ()=>this.recibirRespuestaOk());
+        break;
+      case RECIBIR_RESPUESTA_KO:
+        this.ejecutarTransicion(EN_ESPERA_DE_RESPUESTA, RESPUESTA_KO, ()=>this.recibirRespuestaKo());
+        break;
+      case VOLVER_A_COMENZAR:
+        this.ejecutarTransicion(RESPUESTA_OK, INICIO, ()=>this.volverAComenzar());
+        break;
+    }
+  }
+
+  private ejecutarTransicion(estadoEsperado: number | number[], estadoDestino: number, funcionAsociada: Function) {
+    if (Array.isArray(estadoEsperado)) {
+      if (!estadoEsperado.includes(this.estado)) {
+        throw new Error("No se puede transicionar de " + this.estado + " a " + estadoDestino);
+      }
+    }
+    else if (this.estado !== estadoEsperado) {
+      throw new Error("No se puede transicionar de " + this.estado + " a " + estadoDestino);
+    }
+    this.estado = estadoDestino;
+    funcionAsociada();
+  }
+
+  comenzarPresentacion() {}
+  pedirNombre() {}
+  pedirEmail() {}
+  pedirFechaNacimiento() {}
+  marcarNombreComoInvalido() {}
+  marcarEmailComoInvalido() {}
+  marcarFechaNacimientoComoInvalida() {}
+  solicitarConfirmacion() {}
+  enviarDatosAlServidor() {}
+  recibirRespuestaOk() {}
+  recibirRespuestaKo() {}
+  volverAComenzar() {}
 }
