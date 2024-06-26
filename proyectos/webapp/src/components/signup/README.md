@@ -41,12 +41,21 @@ Más adelante vamos a reimplementar este componente mediante un formulario.
 
 # Transiciones : NOMENCLATURA: infinitivos
 
+comenzar: inicio -> presentacion
 pedir_nombre: PRESENTACION -> EN_ESPERA_DE_NOMBRE
 pedir_email: EN_ESPERA_DE_NOMBRE -> EN_ESPERA_DE_EMAIL
+pedir_email: NOMBRE_INVALIDO -> EN_ESPERA_DE_EMAIL
 pedir_fecha_nacimiento: EN_ESPERA_DE_EMAIL -> EN_ESPERA_DE_FECHA_NACIMIENTO
+pedir_fecha_nacimiento: EMAIL_INVALIDO -> EN_ESPERA_DE_FECHA_NACIMIENTO
 marcar_nombre_como_invalido: EN_ESPERA_DE_NOMBRE -> NOMBRE_INVALIDO
 marcar_email_como_invalido: EN_ESPERA_DE_EMAIL -> EMAIL_INVALIDO
 marcar_fecha_nacimiento_como_invalida: EN_ESPERA_DE_FECHA_NACIMIENTO -> FECHA_DE_NACIMIENTO_INVALIDA
+solicitar_confirmacion: EN_ESPERA_DE_FECHA_NACIMIENTO -> EN_ESPERA_DE_CONFIRMACION
+solicitar_confirmacion: FECHA_DE_NACIMIENTO_INVALIDA -> EN_ESPERA_DE_CONFIRMACION
+enviar_datos_al_servidor: EN_ESPERA_DE_CONFIRMACION -> EN_ESPERA_DE_RESPUESTA
+recibir_respuesta_ok: EN_ESPERA_DE_RESPUESTA -> RESPUESTA_OK
+recibir_respuesta_ko: EN_ESPERA_DE_RESPUESTA -> RESPUESTA_KO
+
 
 
 
