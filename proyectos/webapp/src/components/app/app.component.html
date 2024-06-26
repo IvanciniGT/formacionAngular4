@@ -8,18 +8,25 @@ angular entiende que el valor (lo que hay entre comillas)
 debe procesarse como si fuera código TS
 -->
 
-<usuario [id]="300"></usuario>
+<usuario [id]="300 +100"></usuario>
 
 <br>
+
 <typewriter text="Mi super máquina de escribir automática"></typewriter>
 
 <br>
-<typewriter text="Mi super máquina de escribir automática"
-    [speed]="1000"
+
+<typewriter [text]="'Mi super máquina de escribir ' + 'automática'"
+    [speed]="200"
+    cursor="_"
+    [hideCursorOnComplete]="false"
+    textClass="text"
+    cursorClass="cursor"
 ></typewriter>
 
 <br>
-<typewriter text="Mi super máquina de escribir automática"
+
+<typewriter text="Mi super máquina de escribir automática archilofactica"
     [loop]="true"
-    [speed]="10"
+    [speed]="100"
 ></typewriter>
