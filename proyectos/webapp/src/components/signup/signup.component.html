@@ -38,13 +38,32 @@ const RESPUESTA_KO = 11;
         <ng-container *ngIf="this.estado !== EN_ESPERA_DE_NOMBRE && this.estado !== NOMBRE_INVALIDO">
             <!-- Campo email -->
             <div id="email">
-                Vamos a por el email
+                <div>
+                    <typewriter text="Introduzca su email:"></typewriter>
+                </div>
+                <div>
+                    <input type="email" [(ngModel)]="this.email"
+                        [readonly]="this.estado !== EN_ESPERA_DE_EMAIL && this.estado !== EMAIL_INVALIDO">
+                    <span *ngIf="this.estado === EMAIL_INVALIDO" class="error">El email no es correcto</span>
+                    <button *ngIf="this.estado === EN_ESPERA_DE_EMAIL || this.estado === EMAIL_INVALIDO"
+                        (click)="this.validarElEmail()">Continuar</button>
+                </div>
             </div>
 
             <ng-container *ngIf="this.estado !== EN_ESPERA_DE_EMAIL && this.estado !== EMAIL_INVALIDO">
                 <!-- Campo fecha nacimiento -->
                 <div id="fechaNacimiento">
-
+                    <div>
+                        <typewriter text="Introduzca su fecha de nacimiento:"></typewriter>
+                    </div>
+                    <div>
+                        <input type="date" [(ngModel)]="this.fechaNacimiento"
+                            [readonly]="this.estado !== EN_ESPERA_DE_FECHA_NACIMIENTO && this.estado !== FECHA_DE_NACIMIENTO_INVALIDA">
+                        <span *ngIf="this.estado === FECHA_DE_NACIMIENTO_INVALIDA" class="error">La fecha de nacimiento no es correcta</span>
+                        <button *ngIf="this.estado === EN_ESPERA_DE_FECHA_NACIMIENTO || this.estado === FECHA_DE_NACIMIENTO_INVALIDA"
+                            (click)="this.validarLaFechaDeNacimiento()">Continuar</button>
+                    </div>
+    
                 </div>
 
                 <ng-container

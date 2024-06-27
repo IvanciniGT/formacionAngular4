@@ -75,3 +75,19 @@ stateDiagram-v2
     en_espera_de_respuesta --> respuesta_ok: recibir_respuesta_ok
     en_espera_de_respuesta --> respuesta_ko: recibir_respuesta_ko
 ```
+
+
+1º Un componente NO ES UNA APLCICACIÓN. 
+Un componente es una parte de una aplicación.
+Un componente que sea muy grande, lo dividiré en 10 componentes pequeños.
+
+Si un componentes tiene una lógica aun así muy compleja, eso implaría que voy a  tener 10 variables
+Donde voy a tener que controlar las combinaciones de todas ellas. Me sales cientos sino miles de combinaciones.
+Que se verán reflejadas en ifs... en el html
+
+SIEMPRE VA A SER MAS SENCILLO Y MANTENIBLE El usar una máquina de estados.
+
+Mis estados pueden cambiar. BIEN.
+Cambio, el estado, sus transiciones y el resto nada!
+NO, es que también cambia el resto... pues tendré que cambiar más cosas...
+PERO SI FUERA CON VARIABLES FLIPAS !! Cambiarás muchas muchas muchas más cosas.
