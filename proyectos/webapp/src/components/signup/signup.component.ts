@@ -3,6 +3,7 @@ import { UsuariosService } from '../../services/usuarios/usuarios.service';
 import { DatosNuevoUsuario } from '../../models/usuarios/datos.nuevo.usuario.model';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { TypewritterComponent } from '../typewritter/typewritter.component';
 
 // Transiciones:
 
@@ -22,7 +23,7 @@ const VOLVER_A_COMENZAR = 11;
 @Component({
   selector: 'signup',
   standalone: true,
-  imports: [CommonModule], // Me permite usar un monto de directivas que tiene angular... como ngIf, ngFor, etc.
+  imports: [CommonModule, TypewritterComponent], // Me permite usar un monto de directivas que tiene angular... como ngIf, ngFor, etc.
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
@@ -148,7 +149,7 @@ export class SignupComponent {
 
   validarElNombre(nombre:string){
     this.nombre = nombre;
-    if(this.nombre?.match(/^[a-zA-Z0-9]{4,20}+$/)){
+    if(this.nombre?.match(/^[a-zA-Z0-9]{4,20}$/)){
       this.transicionar(PEDIR_EMAIL);
     } else {
       this.transicionar(MARCAR_NOMBRE_COMO_INVALIDO);
