@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { UsuariosService } from '../../services/usuarios/usuarios.service';
+import { DatosNuevoUsuario } from '../../models/usuarios/datos.nuevo.usuario.model';
+import { Subscription } from 'rxjs';
 
 // Estados:
 
@@ -45,17 +47,22 @@ export class SignupComponent {
   fechaNacimiento?:string;
   motivoRechazo?:string;
   estado:number;
-  private usuariosService: UsuariosService;
+  subscripcion: Subscription | undefined;
+  //private usuariosService: UsuariosService;
 
-  constructor(usuariosService: UsuariosService) { // Inyeccion de depencias. 
+  constructor(private usuariosService: UsuariosService) { // Inyeccion de depencias. 
                                                   // Que cuando Angular cree una instancia de este componente
                                                   // Me entregue una instancia de UsuariosService... Con la implementación que sea... me la pela !
     this.estado = INICIO;
-    this.usuariosService = usuariosService;
+    //this.usuariosService = usuariosService;
   }
 
   ngOnInit() {
     this.transicionar(COMENZAR_PRESENTACION);
+  }
+  
+  ngOnDestroy() {
+    this.subscripcion?.unsubscribe(); // Caso que el usuario salga prematuramente de la página mientras se está enviando la petición al servidor
   }
 
   private transicionar(transicion: number) {
@@ -114,32 +121,28 @@ export class SignupComponent {
   }
 
   enviarDatosAlServidor() {
-    // TODO... enviar datos al servidor
-    //const url = "http://localhost/8080/signup"
-    // Hago un post de los datos
-    // JSON??? JavaScript Object Notation
     const datos = {
                     "nombre": this.nombre, 
                     "email": this.email, 
                     "fechaNacimiento": this.fechaNacimiento 
-                  };
-    this.usuariosService.solicitarRegistro(datos);
-    // HAGO AQUI EL POST. En JS tenemos una funcion para hacer post. Angular me da otra... ya os la enseñaré.
-    // ESTO ES UNA MIERDA INTEGRAL !!!!!!!!
-    // EN LA PUÑETERA VIDA , NUNCA 
-    // ESTOY CREANDO EL QUE? QUE ES ESTA CLASE? Un componente Web.
-    // SOLID: Single Responsability Principle
-    // Y cuál es la responsabilidad de un componente WEB? Definir una marquita, su estilo y su comportamiento.
-    // En nuestro caso concreto, cual es la responsabilidad de este componente? CAPTURAR los datos de un nuevo usuario, solicitar un registro e informarle de si ha podido registrarse o no.
-    // A quién le solicito el registro? Al servidor? Ni de coña. A UN SERVICIO QUE MONTAREMOS EN FRONTAL
-    // Cuya responsabilidad será comunicarse con el servidor.
-    //fetch(url, {method: 'POST', body: JSON.stringify(datos)})
-    // Y el servidor contestará con un OK o un KO
-    // Si contesta con un OK:
-    this.transicionar(RECIBIR_RESPUESTA_OK);
-    // Si contesta con un KO:
-    this.transicionar(RECIBIR_RESPUESTA_KO);
-    // Rellenar: motivoRechazo
+                  } as DatosNuevoUsuario;
+    // En typescript usamos el concepto de Duck Typing... También JS
+    // Duck typing: Si parece un pato, nada como un pato y grazna como un pato... Entonces es un pato.
+  /*
+    const datos2 = new DatosNuevoUsuario();
+    datos2.nombre = this.nombre!;
+    datos2.email = this.email!;
+    datos2.fechaNacimiento = this.fechaNacimiento!;
+  */
+    this.subscripcion=this.usuariosService.solicitarRegistro(datos).subscribe( // Esta función se ejecuta de forma asíncrona (más o menos)
+      { // Esto queda programado para hacerse en el futuro.. es el equivalente a los then y catch de las promesas
+        next: () => this.transicionar(RECIBIR_RESPUESTA_OK),
+        error: (mensaje) => {
+          this.motivoRechazo = mensaje;
+          this.transicionar(RECIBIR_RESPUESTA_KO)
+        }
+      }
+    );
   }
 
   validarElNombre(nombre:string){
