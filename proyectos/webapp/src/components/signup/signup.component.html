@@ -1,5 +1,5 @@
 <div id="signup">
-<!---
+    <!---
 const INICIO = 0;
 const PRESENTACION = 1;
 const EN_ESPERA_DE_NOMBRE = 2;
@@ -14,33 +14,43 @@ const RESPUESTA_OK = 10;
 const RESPUESTA_KO = 11;
 -->
     <!-- Presentación -->
-    <div id="presentacion" *ngIf="this.estado !== INICIO && this.estado !== PRESENTACION">
+    <div id="presentacion">
 
     </div>
 
-    <!-- Campo nombre -->
-    <div id="nombre">
+    <ng-container *ngIf="this.estado !== INICIO && this.estado !== PRESENTACION">
+        <!-- Campo nombre -->
+        <div id="nombre">
 
-    </div>
+        </div>
 
-    <!-- Campo email -->
-    <div id="email">
+        <ng-container *ngIf="this.estado !== EN_ESPERA_DE_NOMBRE && this.estado !== NOMBRE_INVALIDO">
+            <!-- Campo email -->
+            <div id="email">
 
-    </div>
+            </div>
 
-    <!-- Campo fecha nacimiento -->
-    <div id="fechaNacimiento">
+            <ng-container *ngIf="this.estado !== EN_ESPERA_DE_EMAIL && this.estado !== EMAIL_INVALIDO">
+                <!-- Campo fecha nacimiento -->
+                <div id="fechaNacimiento">
 
-    </div>
+                </div>
 
-    <!-- Confirmación -->
-    <div id="confirmacion">
+                <ng-container
+                    *ngIf="this.estado !== EN_ESPERA_DE_FECHA_NACIMIENTO && this.estado !== FECHA_DE_NACIMIENTO_INVALIDA">
+                    <!-- Confirmación -->
+                    <div id="confirmacion">
 
-    </div>
+                    </div>
 
-    <!-- Respuesta -->
-    <div id="respuesta">
+                    <ng-container *ngIf="this.estado !== EN_ESPERA_DE_CONFIRMACION">
+                        <!-- Respuesta -->
+                        <div id="respuesta">
 
-    </div>
-
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </ng-container>
+        </ng-container>
+    </ng-container>
 </div>
