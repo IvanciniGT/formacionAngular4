@@ -1,4 +1,5 @@
 <div id="signup">
+    <div id="container">
 
     <!-- Presentación -->
     <div id="presentacion">
@@ -15,7 +16,8 @@
             <div>
                 <input type="text" [(ngModel)]="this.nombre"
                     [readonly]="this.estado !== EN_ESPERA_DE_NOMBRE && this.estado !== NOMBRE_INVALIDO">
-                <span *ngIf="this.estado === NOMBRE_INVALIDO" class="error">El nombre no es correcto</span>
+                    <span *ngIf="this.estado !== EN_ESPERA_DE_NOMBRE && this.estado !== NOMBRE_INVALIDO" class="ok">√</span>
+                    <span *ngIf="this.estado === NOMBRE_INVALIDO" class="error">El nombre no es correcto</span>
                 <button *ngIf="this.estado === EN_ESPERA_DE_NOMBRE || this.estado === NOMBRE_INVALIDO"
                     (click)="this.validarElNombre()">Continuar</button>
             </div>
@@ -31,8 +33,9 @@
                 <div>
                     <input type="email" [(ngModel)]="this.email"
                         [readonly]="this.estado !== EN_ESPERA_DE_EMAIL && this.estado !== EMAIL_INVALIDO">
-                    <span *ngIf="this.estado === EMAIL_INVALIDO" class="error">El email no es correcto</span>
-                    <button *ngIf="this.estado === EN_ESPERA_DE_EMAIL || this.estado === EMAIL_INVALIDO"
+                        <span *ngIf="this.estado !== EN_ESPERA_DE_EMAIL && this.estado !== EMAIL_INVALIDO" class="ok">√</span>
+                        <span *ngIf="this.estado === EMAIL_INVALIDO" class="error">El email no es correcto</span>
+                        <button *ngIf="this.estado === EN_ESPERA_DE_EMAIL || this.estado === EMAIL_INVALIDO"
                         (click)="this.validarElEmail()">Continuar</button>
                 </div>
             </div>
@@ -46,7 +49,8 @@
                     <div>
                         <input type="date" [(ngModel)]="this.fechaNacimiento"
                             [readonly]="this.estado !== EN_ESPERA_DE_FECHA_NACIMIENTO && this.estado !== FECHA_DE_NACIMIENTO_INVALIDA">
-                        <span *ngIf="this.estado === FECHA_DE_NACIMIENTO_INVALIDA" class="error">La fecha de nacimiento no es correcta</span>
+                            <span *ngIf="this.estado !== EN_ESPERA_DE_FECHA_NACIMIENTO && this.estado !== FECHA_DE_NACIMIENTO_INVALIDA" class="ok">√</span>
+                            <span *ngIf="this.estado === FECHA_DE_NACIMIENTO_INVALIDA" class="error">La fecha de nacimiento no es correcta</span>
                         <button *ngIf="this.estado === EN_ESPERA_DE_FECHA_NACIMIENTO || this.estado === FECHA_DE_NACIMIENTO_INVALIDA"
                             (click)="this.validarLaFechaDeNacimiento()">Continuar</button>
                     </div>
@@ -83,4 +87,5 @@
             </ng-container>
         </ng-container>
     </ng-container>
+    </div>
 </div>

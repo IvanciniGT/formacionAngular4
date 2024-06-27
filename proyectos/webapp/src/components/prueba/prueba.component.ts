@@ -4,10 +4,10 @@ import { Component, Input, OnInit } from '@angular/core';
   selector: 'prueba',
   standalone: true,
   imports: [],
-  templateUrl: './usuario.component.html',
-  styleUrl: './usuario.component.css'
+  templateUrl: './prueba.component.html',
+  styleUrl: './prueba.component.css'
 })
-export class UsuarioComponent /*implements OnInit*/ { 
+export class PruebaComponent /*implements OnInit*/ { 
                               // En versiones anteriores de Angular era oblitorio hacer esta implementación
                               // para que se ejecutara el método ngOnInit()
                               // Hoy en día, Angular ya lo hace por nosotros

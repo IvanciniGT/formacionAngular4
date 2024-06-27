@@ -14,9 +14,18 @@
     align-items: center;
     flex-direction: column;
 }
+#container {
+    width: 50%;
+}
 
 #presentacion, #nombre, #email, #fechaNacimiento, #confirmacion {
     margin-bottom: 20px;
+}
+#nombre>div:first-child,
+#email>div:first-child,
+#fechaNacimiento>div:first-child,
+#confirmacion>div:first-child{
+                margin-bottom: 10px;
 }
 
 
@@ -24,7 +33,9 @@ button {
     background-color: #F29F05;
     border: none;
     border-radius: 3px;
-    padding:3px;
+    padding: 3px 15px;
+    min-width: 50px;
+    margin-right: 20px;
 }
 
 #presentacion {

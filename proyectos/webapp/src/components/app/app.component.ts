@@ -1,5 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { UsuarioComponent } from "../prueba/usuario.component";
+import { PruebaComponent } from "../prueba/prueba.component";
 import { TypewritterComponent } from "../typewritter/typewritter.component";
 import { SignupComponent } from '../signup/signup.component';
 
@@ -9,7 +9,7 @@ import { SignupComponent } from '../signup/signup.component';
     standalone: true, // (1)
     templateUrl: './app.component.html', // Indico la plantilla que usaré para RENDERIZAR este componente
     styleUrl: './app.component.css',
-    imports: [UsuarioComponent, TypewritterComponent, SignupComponent]
+    imports: [PruebaComponent, TypewritterComponent, SignupComponent]
 })
 // Aquí va la lógica del componente
 export class AppComponent /*implements AfterViewInit*/{
