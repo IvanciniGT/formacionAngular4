@@ -1,11 +1,7 @@
-import { Injectable } from '@angular/core';
 import { Usuario } from '../../models/usuarios/usuario.model';
 import { Observable } from 'rxjs';
 import { DatosNuevoUsuario } from '../../models/usuarios/datos.nuevo.usuario.model';
 
-//@Injectable({
-//  providedIn: 'root'
-//})
 export abstract class UsuariosService {
 
   abstract solicitarRegistro(datosDeAltaDeUsuario:DatosNuevoUsuario): Observable<void> ;

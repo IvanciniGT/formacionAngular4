@@ -11,3 +11,11 @@ GUAY. Pero no siempre es lo que quiero
 Si quiero forzar que un estilo sea heredable por los subcomponentes: :host ::ng-deep
 Cuidado.... porque puedo machar estilos definidos por debajo.
 */
+
+:host {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    min-width: 100%;
+}

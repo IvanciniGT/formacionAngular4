@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 
 // Estados
 const INICIADO = 0;
@@ -39,6 +39,12 @@ export class TypewritterComponent {
   @Input() hideCursorOnComplete: boolean = true;
   @Input() initialDelay: number = 0;
   @Input() loop: boolean = false;
+
+  // Para que los componentes que usaan este, puedan enterarse de que ha terminado la animación, 
+  // podemos emitir un evento cuando se termina de pintar el texto.
+  @Output() finished: EventEmitter<void> = new EventEmitter<void>();
+  // El emisor de eventos, podría mandar información adicional, asociada al evento.
+  // Si fuera así, en lugar de void, usaríamos un tipo de dato que represente esa información adicional.
 
   // Las propiedades INPUT se asignan al inicializarse el componente
   // Después, en nuestro caso, queremos permitir que se puedan cambiar (el texto: `text`)
@@ -151,6 +157,7 @@ export class TypewritterComponent {
     this.finalizarParpadeoDelCursor();
     if (this.loop)
       this.transicionar(RECOMENZAR_A_PINTAR_LETRITAS)
+    this.finished.emit(); // Emitimos un evento de finalización de la animación
   }
 
   private irPintandoElTexto() {

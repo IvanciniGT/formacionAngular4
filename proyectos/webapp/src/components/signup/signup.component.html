@@ -15,13 +15,16 @@ const RESPUESTA_KO = 11;
 -->
     <!-- Presentación -->
     <div id="presentacion">
-        <typewriter text="Bienvenido a nuestra app. Vamos a darle de alta"></typewriter>
+        <typewriter
+            (finished)="this.presentacionFinalizada()"
+            text="Bienvenido a nuestra app. Vamos a darle de alta."
+            ></typewriter>
     </div>
 
     <ng-container *ngIf="this.estado !== INICIO && this.estado !== PRESENTACION">
         <!-- Campo nombre -->
         <div id="nombre">
-
+Y solicitar el nombre
         </div>
 
         <ng-container *ngIf="this.estado !== EN_ESPERA_DE_NOMBRE && this.estado !== NOMBRE_INVALIDO">
