@@ -41,6 +41,22 @@ button {
 #presentacion {
     color: #05f2b7;
 }
+.ok , #respuesta_ok{
+    color: #50f205;
+    font-weight: bold;
+}
+#respuesta_nok{
+    color: #f20505;
+    font-weight: bold;
+}
+.error {
+    color: #f20505;
+    font-size: 0.8em;
+}
+.error::before {
+    content: "X";
+    margin-right: 10px;
+}
 input{
     border: none;
     border-radius: 3px;
@@ -48,3 +64,32 @@ input{
     padding:3px;
     margin-right: 10px;
 }
+
+#loaderPanel{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+}
+#loader {
+    margin-top: 25px auto;
+    border: 8px solid #052637;
+    border-top: 8px solid #0FD694;
+    border-bottom: 8px solid #0FD694;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    100% {
+      transform: rotate(360deg);
+    }
+  }
