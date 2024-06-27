@@ -88,7 +88,7 @@ export class UsuarioComponent {
           this.INICIADO,
           this.VISUALIZACION,
           this.ERROR_EN_CARGA_DE_DATOS
-        ], this.EDICION, () => this.editar());
+        ], this.EDICION);
         break;
       case REINTENTAR_CARGA_DATOS:
         this.ejecutarTransicion(this.ERROR_EN_CARGA_DE_DATOS, this.ERROR_EN_CARGA_DE_DATOS, () => this.cargarUsuario());
