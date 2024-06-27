@@ -124,6 +124,7 @@ export class SignupComponent {
   }
 
   enviarDatosAlServidor() {
+    console.log("Enviando datos al servidor...");
     const datos = {
                     "nombre": this.nombre, 
                     "email": this.email, 
@@ -139,11 +140,18 @@ export class SignupComponent {
   */
     this.subscripcion=this.usuariosService.solicitarRegistro(datos).subscribe( // Esta función se ejecuta de forma asíncrona (más o menos)
       { // Esto queda programado para hacerse en el futuro.. es el equivalente a los then y catch de las promesas
-        next: () => this.transicionar(RECIBIR_RESPUESTA_OK),
+        next: () => {
+          console.log("HE ACABADO!")
+          this.transicionar(RECIBIR_RESPUESTA_OK)
+        },
         error: (mensaje) => {
           this.motivoRechazo = mensaje;
           this.transicionar(RECIBIR_RESPUESTA_KO)
-        }
+        },
+//        complete: () => {
+//          console.log("HE ACABADO!")
+//          this.transicionar(RECIBIR_RESPUESTA_OK)
+//       }
       }
     );
   }

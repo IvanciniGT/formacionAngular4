@@ -85,10 +85,10 @@ const RESPUESTA_KO = 11;
                             <div id="esperando_respuesta" *ngIf="this.estado === EN_ESPERA_DE_RESPUESTA">
                                 <typewriter text="Espere mientras le damos de alta"></typewriter>
                             </div>
-                            <div id="esperando_respuesta" *ngIf="this.estado === RESPUESTA_OK">
+                            <div id="respuesta_ok" *ngIf="this.estado === RESPUESTA_OK">
                                 <typewriter text="Se ha dado de alta correctamente"></typewriter>
                             </div>
-                            <div id="esperando_respuesta" *ngIf="this.estado === RESPUESTA_KO">
+                            <div id="respuesta_nok" *ngIf="this.estado === RESPUESTA_KO">
                                 <typewriter text="Hubo un problema con su registro"></typewriter>
                             </div>
                         </div>

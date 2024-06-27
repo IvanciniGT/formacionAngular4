@@ -10,7 +10,17 @@ import { UsuariosService } from './usuarios.service';
 export class UsuariosServiceImpl extends UsuariosService{
 
   solicitarRegistro(datosDeAltaDeUsuario:DatosNuevoUsuario): Observable<void> {
-    return Observable.create();
+    console.log("Llamando al servidor...")
+    return new Observable( observer => { // equivalente al new Promise((resolve, reject) => {})
+                                         // En lugar de un resolve y reject, tenemos un next y un error
+                                         console.log("Programando la llamada al servidor...")
+      setTimeout(() => {
+        console.log("He acabado de llamar al servidor...")
+        observer.next(); // Mando valor... en nuestro caso ninguna valor: Solo mandamos un HE ACABADO!
+        observer.complete();
+      }, 5000);
+
+    })
   }
 
   getUsuario(email: string): Observable<Usuario> {
