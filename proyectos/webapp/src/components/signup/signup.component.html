@@ -15,22 +15,30 @@ const RESPUESTA_KO = 11;
 -->
     <!-- Presentación -->
     <div id="presentacion">
-        <typewriter
-            (finished)="this.presentacionFinalizada()"
-            text="Bienvenido a nuestra app. Vamos a darle de alta."
-            ></typewriter>
+        <typewriter (finished)="this.presentacionFinalizada()" text="Bienvenido a nuestra app. Vamos a darle de alta.">
+        </typewriter>
     </div>
 
     <ng-container *ngIf="this.estado !== INICIO && this.estado !== PRESENTACION">
         <!-- Campo nombre -->
         <div id="nombre">
-Y solicitar el nombre
+            <div>
+                <typewriter text="Introduzca su nombre:"></typewriter>
+            </div>
+            <div>
+                <input type="text" [(ngModel)]="this.nombre"
+                    [readonly]="this.estado !== EN_ESPERA_DE_NOMBRE && this.estado !== NOMBRE_INVALIDO">
+                <span *ngIf="this.estado === NOMBRE_INVALIDO" class="error">El nombre no es correcto</span>
+                <button *ngIf="this.estado === EN_ESPERA_DE_NOMBRE || this.estado === NOMBRE_INVALIDO"
+                    (click)="this.validarElNombre()">Continuar</button>
+            </div>
+            <!--Hacemos un bindeo BIDIRECCIONAL de la propiedad this.nombre al campo del formulario y viceversa-->
         </div>
 
         <ng-container *ngIf="this.estado !== EN_ESPERA_DE_NOMBRE && this.estado !== NOMBRE_INVALIDO">
             <!-- Campo email -->
             <div id="email">
-
+                Vamos a por el email
             </div>
 
             <ng-container *ngIf="this.estado !== EN_ESPERA_DE_EMAIL && this.estado !== EMAIL_INVALIDO">

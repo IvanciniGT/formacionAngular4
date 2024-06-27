@@ -4,6 +4,7 @@ import { DatosNuevoUsuario } from '../../models/usuarios/datos.nuevo.usuario.mod
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { TypewritterComponent } from '../typewritter/typewritter.component';
+import { FormsModule } from '@angular/forms';
 
 // Transiciones:
 
@@ -23,7 +24,7 @@ const VOLVER_A_COMENZAR = 11;
 @Component({
   selector: 'signup',
   standalone: true,
-  imports: [CommonModule, TypewritterComponent], // Me permite usar un monto de directivas que tiene angular... como ngIf, ngFor, etc.
+  imports: [CommonModule, TypewritterComponent, FormsModule], // Me permite usar un monto de directivas que tiene angular... como ngIf, ngFor, etc.
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
@@ -147,8 +148,7 @@ export class SignupComponent {
     );
   }
 
-  validarElNombre(nombre:string){
-    this.nombre = nombre;
+  validarElNombre(){
     if(this.nombre?.match(/^[a-zA-Z0-9]{4,20}$/)){
       this.transicionar(PEDIR_EMAIL);
     } else {
@@ -156,8 +156,7 @@ export class SignupComponent {
     }
   }
 
-  validarElEmail(email:string){
-    this.email = email;
+  validarElEmail(){
     if(this.email?.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/)){
       this.transicionar(PEDIR_FECHA_NACIMIENTO);
     }else{
@@ -165,8 +164,7 @@ export class SignupComponent {
     }
   }
 
-  validarLaFechaDeNacimiento(fechaNacimiento:string){
-    this.fechaNacimiento = fechaNacimiento;
+  validarLaFechaDeNacimiento(){
     if(this.fechaNacimiento?.match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)){
       this.transicionar(SOLICITAR_CONFIRMACION);
     }else{
