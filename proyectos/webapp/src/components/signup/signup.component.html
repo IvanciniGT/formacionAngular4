@@ -1,5 +1,46 @@
+<div id="signup">
+<!---
+const INICIO = 0;
+const PRESENTACION = 1;
+const EN_ESPERA_DE_NOMBRE = 2;
+const NOMBRE_INVALIDO = 3;
+const EN_ESPERA_DE_EMAIL = 4;
+const EMAIL_INVALIDO = 5;
+const EN_ESPERA_DE_FECHA_NACIMIENTO = 6;
+const FECHA_DE_NACIMIENTO_INVALIDA = 7;
+const EN_ESPERA_DE_CONFIRMACION = 8;
+const EN_ESPERA_DE_RESPUESTA = 9;
+const RESPUESTA_OK = 10;
+const RESPUESTA_KO = 11;
+-->
+    <!-- Presentación -->
+    <div id="presentacion" *ngIf="this.estado !== INICIO && this.estado !== PRESENTACION">
 
-<div>
+    </div>
 
-    
+    <!-- Campo nombre -->
+    <div id="nombre">
+
+    </div>
+
+    <!-- Campo email -->
+    <div id="email">
+
+    </div>
+
+    <!-- Campo fecha nacimiento -->
+    <div id="fechaNacimiento">
+
+    </div>
+
+    <!-- Confirmación -->
+    <div id="confirmacion">
+
+    </div>
+
+    <!-- Respuesta -->
+    <div id="respuesta">
+
+    </div>
+
 </div>

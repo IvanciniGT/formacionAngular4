@@ -2,21 +2,7 @@ import { Component } from '@angular/core';
 import { UsuariosService } from '../../services/usuarios/usuarios.service';
 import { DatosNuevoUsuario } from '../../models/usuarios/datos.nuevo.usuario.model';
 import { Subscription } from 'rxjs';
-
-// Estados:
-
-const INICIO = 0;
-const PRESENTACION = 1;
-const EN_ESPERA_DE_NOMBRE = 2;
-const NOMBRE_INVALIDO = 3;
-const EN_ESPERA_DE_EMAIL = 4;
-const EMAIL_INVALIDO = 5;
-const EN_ESPERA_DE_FECHA_NACIMIENTO = 6;
-const FECHA_DE_NACIMIENTO_INVALIDA = 7;
-const EN_ESPERA_DE_CONFIRMACION = 8;
-const EN_ESPERA_DE_RESPUESTA = 9;
-const RESPUESTA_OK = 10;
-const RESPUESTA_KO = 11;
+import { CommonModule } from '@angular/common';
 
 // Transiciones:
 
@@ -36,11 +22,26 @@ const VOLVER_A_COMENZAR = 11;
 @Component({
   selector: 'signup',
   standalone: true,
-  imports: [],
+  imports: [CommonModule], // Me permite usar un monto de directivas que tiene angular... como ngIf, ngFor, etc.
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
 export class SignupComponent {
+
+  // Estados:
+
+  readonly INICIO = 0;
+  readonly PRESENTACION = 1;
+  readonly EN_ESPERA_DE_NOMBRE = 2;
+  readonly NOMBRE_INVALIDO = 3;
+  readonly EN_ESPERA_DE_EMAIL = 4;
+  readonly EMAIL_INVALIDO = 5;
+  readonly EN_ESPERA_DE_FECHA_NACIMIENTO = 6;
+  readonly FECHA_DE_NACIMIENTO_INVALIDA = 7;
+  readonly EN_ESPERA_DE_CONFIRMACION = 8;
+  readonly EN_ESPERA_DE_RESPUESTA = 9;
+  readonly RESPUESTA_OK = 10;
+  readonly RESPUESTA_KO = 11;
 
   nombre?:string;
   email?:string;
@@ -53,7 +54,7 @@ export class SignupComponent {
   constructor(private usuariosService: UsuariosService) { // Inyeccion de depencias. 
                                                   // Que cuando Angular cree una instancia de este componente
                                                   // Me entregue una instancia de UsuariosService... Con la implementación que sea... me la pela !
-    this.estado = INICIO;
+    this.estado = this.INICIO;
     //this.usuariosService = usuariosService;
   }
 
@@ -68,40 +69,40 @@ export class SignupComponent {
   private transicionar(transicion: number) {
     switch (transicion) {
       case COMENZAR_PRESENTACION:
-        this.ejecutarTransicion(INICIO, PRESENTACION);
+        this.ejecutarTransicion(this.INICIO, this.PRESENTACION);
         break;
       case PEDIR_NOMBRE:
-        this.ejecutarTransicion(PRESENTACION, EN_ESPERA_DE_NOMBRE);
+        this.ejecutarTransicion(this.PRESENTACION, this.EN_ESPERA_DE_NOMBRE);
         break;
       case PEDIR_EMAIL:
-        this.ejecutarTransicion([EN_ESPERA_DE_NOMBRE, NOMBRE_INVALIDO], EN_ESPERA_DE_EMAIL);
+        this.ejecutarTransicion([this.EN_ESPERA_DE_NOMBRE, this.NOMBRE_INVALIDO], this.EN_ESPERA_DE_EMAIL);
         break;
       case PEDIR_FECHA_NACIMIENTO:
-        this.ejecutarTransicion([EN_ESPERA_DE_EMAIL, EMAIL_INVALIDO], EN_ESPERA_DE_FECHA_NACIMIENTO);
+        this.ejecutarTransicion([this.EN_ESPERA_DE_EMAIL, this.EMAIL_INVALIDO], this.EN_ESPERA_DE_FECHA_NACIMIENTO);
         break;
       case MARCAR_NOMBRE_COMO_INVALIDO:
-        this.ejecutarTransicion(EN_ESPERA_DE_NOMBRE, NOMBRE_INVALIDO);
+        this.ejecutarTransicion(this.EN_ESPERA_DE_NOMBRE, this.NOMBRE_INVALIDO);
         break;
       case MARCAR_EMAIL_COMO_INVALIDO:
-        this.ejecutarTransicion(EN_ESPERA_DE_EMAIL, EMAIL_INVALIDO);
+        this.ejecutarTransicion(this.EN_ESPERA_DE_EMAIL, this.EMAIL_INVALIDO);
         break;
       case MARCAR_FECHA_NACIMIENTO_COMO_INVALIDA:
-        this.ejecutarTransicion(EN_ESPERA_DE_FECHA_NACIMIENTO, FECHA_DE_NACIMIENTO_INVALIDA);
+        this.ejecutarTransicion(this.EN_ESPERA_DE_FECHA_NACIMIENTO, this.FECHA_DE_NACIMIENTO_INVALIDA);
         break;
       case SOLICITAR_CONFIRMACION:
-        this.ejecutarTransicion([EN_ESPERA_DE_FECHA_NACIMIENTO, FECHA_DE_NACIMIENTO_INVALIDA], EN_ESPERA_DE_CONFIRMACION);
+        this.ejecutarTransicion([this.EN_ESPERA_DE_FECHA_NACIMIENTO, this.FECHA_DE_NACIMIENTO_INVALIDA], this.EN_ESPERA_DE_CONFIRMACION);
         break;
       case ENVIAR_DATOS_AL_SERVIDOR:
-        this.ejecutarTransicion(EN_ESPERA_DE_CONFIRMACION, EN_ESPERA_DE_RESPUESTA, ()=>this.enviarDatosAlServidor());
+        this.ejecutarTransicion(this.EN_ESPERA_DE_CONFIRMACION, this.EN_ESPERA_DE_RESPUESTA, ()=>this.enviarDatosAlServidor());
         break;
       case RECIBIR_RESPUESTA_OK:
-        this.ejecutarTransicion(EN_ESPERA_DE_RESPUESTA, RESPUESTA_OK);
+        this.ejecutarTransicion(this.EN_ESPERA_DE_RESPUESTA, this.RESPUESTA_OK);
         break;
       case RECIBIR_RESPUESTA_KO:
-        this.ejecutarTransicion(EN_ESPERA_DE_RESPUESTA, RESPUESTA_KO);
+        this.ejecutarTransicion(this.EN_ESPERA_DE_RESPUESTA, this.RESPUESTA_KO);
         break;
       case VOLVER_A_COMENZAR:
-        this.ejecutarTransicion(EN_ESPERA_DE_CONFIRMACION, EN_ESPERA_DE_NOMBRE);
+        this.ejecutarTransicion(this.EN_ESPERA_DE_CONFIRMACION, this.EN_ESPERA_DE_NOMBRE);
         break;
     }
   }
