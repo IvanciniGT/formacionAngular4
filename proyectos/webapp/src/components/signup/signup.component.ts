@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UsuariosService } from '../../services/usuarios/usuarios.service';
 
 // Estados:
 
@@ -44,9 +45,13 @@ export class SignupComponent {
   fechaNacimiento?:string;
   motivoRechazo?:string;
   estado:number;
+  private usuariosService: UsuariosService;
 
-  constructor(private usuariosService: UsuariosService) { // Inyeccion de depencias
+  constructor(usuariosService: UsuariosService) { // Inyeccion de depencias. 
+                                                  // Que cuando Angular cree una instancia de este componente
+                                                  // Me entregue una instancia de UsuariosService... Con la implementación que sea... me la pela !
     this.estado = INICIO;
+    this.usuariosService = usuariosService;
   }
 
   ngOnInit() {
