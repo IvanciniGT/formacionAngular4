@@ -32,16 +32,16 @@ export class UsuarioComponent {
   readonly ERROR_EN_GUARDADO_DE_DATOS = 6;
   
   // Outputs
-  @Output() usuarioCargado: EventEmitter<Usuario> = new EventEmitter<Usuario>();
-  @Output() usuarioGuardado: EventEmitter<number> = new EventEmitter<number>();
-  @Output() errorCarga: EventEmitter<number> = new EventEmitter<number>();
-  @Output() errorGuardado: EventEmitter<number> = new EventEmitter<number>();
-  @Output() edicionIniciada: EventEmitter<number> = new EventEmitter<number>();
-  @Output() edicionCancelada: EventEmitter<number> = new EventEmitter<number>();
+  @Output() usuarioCargado: EventEmitter<void> = new EventEmitter<void>();
+  @Output() usuarioGuardado: EventEmitter<void> = new EventEmitter<void>();
+  @Output() errorCarga: EventEmitter<any> = new EventEmitter<any>();
+  @Output() errorGuardado: EventEmitter<any> = new EventEmitter<any>();
+  @Output() edicionIniciada: EventEmitter<void> = new EventEmitter<void>();
+  @Output() edicionCancelada: EventEmitter<void> = new EventEmitter<void>();
 
   // Inputs
   @Input() datos!: Usuario | number;
-  @Input() modo: "VISUALIZACION" | "EDICION" = "VISUALIZACION";
+  @Input() modoPorDefecto: "VISUALIZACION" | "EDICION" = "VISUALIZACION";
   @Input() editable: boolean = false;
 
   // Propiedades
@@ -55,7 +55,12 @@ export class UsuarioComponent {
   }
 
   ngOnInit() {
-    
+    if (this.datos instanceof Usuario) { // Miro si me han mandado los datos (o un id numérico)
+      this.usuario = this.datos;
+      this.transicionar(this.modoPorDefecto=="VISUALIZACION" ? VISUALIZAR: EDITAR);
+    }else{ // Pues no.. lo que me han pasado es un numero.
+      this.transicionar(INICIAR_CARGA_DATOS);
+    }
   }
 
   ngOnDestoy() {
@@ -73,6 +78,32 @@ export class UsuarioComponent {
           this.ERROR_EN_GUARDADO_DE_DATOS,
           this.ESPERANDO_GUARDADO_DATOS
         ], this.VISUALIZACION, () => this.visualizar());
+        break;
+      case INICIAR_CARGA_DATOS:
+        this.ejecutarTransicion(this.INICIADO, this.ESPERANDO_DATOS, () => this.cargarUsuario());
+        break;
+      case EDITAR:
+        this.ejecutarTransicion([
+          this.ESPERANDO_DATOS,
+          this.INICIADO,
+          this.VISUALIZACION,
+          this.ERROR_EN_CARGA_DE_DATOS
+        ], this.EDICION, () => this.editar());
+        break;
+      case REINTENTAR_CARGA_DATOS:
+        this.ejecutarTransicion(this.ERROR_EN_CARGA_DE_DATOS, this.ERROR_EN_CARGA_DE_DATOS, () => this.cargarUsuario());
+        break;
+      case MARCAR_ERROR_EN_CARGA_DE_DATOS:
+        this.ejecutarTransicion(this.ESPERANDO_DATOS, this.ERROR_EN_CARGA_DE_DATOS);
+        break;
+      case GUARDAR_DATOS:
+        this.ejecutarTransicion(this.EDICION, this.ESPERANDO_GUARDADO_DATOS, () => this.guardarUsuario());
+        break;
+      case REINTENTAR_GUARDADO_DATOS:
+        this.ejecutarTransicion(this.ERROR_EN_GUARDADO_DE_DATOS, this.ERROR_EN_GUARDADO_DE_DATOS);
+        break;
+      case MARCAR_ERROR_EN_GUARDADO_DE_DATOS:
+        this.ejecutarTransicion(this.ESPERANDO_GUARDADO_DATOS, this.ERROR_EN_GUARDADO_DE_DATOS);
         break;
       }
   }
@@ -93,5 +124,55 @@ export class UsuarioComponent {
 
   visualizar() {
     throw new Error('Method not implemented.');
+  }
+  cargarUsuario() {
+    // Pedir los datos al servicio
+    this.subscricion = this.usuariosService.getUsuario(this.datos as number).subscribe(
+      {
+        next: (usuario: Usuario) => {
+          this.usuario = usuario;
+          this.usuarioCargado.emit();
+          this.transicionar(this.modoPorDefecto=="VISUALIZACION" ? VISUALIZAR: EDITAR);
+        },
+        error: (error: any) => {
+          this.motivoError = error;
+          this.errorCarga.emit(error);
+          this.transicionar(MARCAR_ERROR_EN_CARGA_DE_DATOS);
+        }
+      });
+  }
+  guardarUsuario() {
+    // Pedir los datos al servicio
+    this.subscricion = this.usuariosService.saveUsuario(this.usuario).subscribe(
+      {
+        next: (usuario: Usuario) => {
+          this.usuario = usuario;
+          this.usuarioGuardado.emit();
+          this.transicionar(VISUALIZAR);
+        },
+        error: (error: any) => {
+          this.motivoError = error;
+          this.errorGuardado.emit(error);
+          this.transicionar(MARCAR_ERROR_EN_GUARDADO_DE_DATOS);
+        }
+      });
+  }
+
+  comenzarEdicion(){ // Cuando aprietan el botón de editar
+    this.transicionar(EDITAR);
+    this.edicionIniciada.emit();
+  }
+  cancelarEdicion(){ // Cuando aprietan el botón de cancelar
+    this.transicionar(VISUALIZAR);
+    this.edicionCancelada.emit();
+  }
+  guardar(){ // Cuando aprietan el botón de guardar
+    this.transicionar(GUARDAR_DATOS);
+  }
+  solicitarReinitentarCarga(){ // Cuando aprietan el botón de reintentar
+    this.transicionar(REINTENTAR_CARGA_DATOS);
+  }
+  solicitarGuardado(){ // Cuando aprietan el botón de reintentar
+    this.transicionar(REINTENTAR_GUARDADO_DATOS);
   }
 }

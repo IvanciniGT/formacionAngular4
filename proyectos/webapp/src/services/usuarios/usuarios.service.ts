@@ -6,7 +6,9 @@ export abstract class UsuariosService {
 
   abstract solicitarRegistro(datosDeAltaDeUsuario:DatosNuevoUsuario): Observable<void> ;
 
-  abstract getUsuario(email: string): Observable<Usuario> ; // Esto hará que la función sea asincrona... Como si fuera una promesa
+  abstract getUsuario(id:number): Observable<Usuario> ; // Esto hará que la función sea asincrona... Como si fuera una promesa
+
+  abstract saveUsuario(usuario: Usuario | undefined) : Observable<Usuario>;
 
 }
 

@@ -23,9 +23,13 @@ export class UsuariosServiceImpl extends UsuariosService{
     })
   }
 
-  getUsuario(email: string): Observable<Usuario> {
+  getUsuario(id:number): Observable<Usuario> {
     return Observable.create();
   }
+  saveUsuario(usuario: Usuario | undefined) : Observable<Usuario>{
+    return Observable.create();
+  }
+
 
 }
 
