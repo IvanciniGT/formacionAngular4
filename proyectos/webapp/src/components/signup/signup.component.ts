@@ -157,7 +157,7 @@ export class SignupComponent {
   }
 
   validarElNombre(){
-    if(this.nombre?.match(/^[a-zA-Z0-9]{4,20}$/)){
+    if(this.nombre?.match(/^(\s?[a-zA-Z0-9]{4,20})+$/)){
       this.transicionar(PEDIR_EMAIL);
     } else {
       this.transicionar(MARCAR_NOMBRE_COMO_INVALIDO);

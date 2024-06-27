@@ -10,7 +10,7 @@
         <!-- Campo nombre -->
         <div id="nombre">
             <div>
-                <typewriter text="Introduzca su nombre:"></typewriter>
+                <typewriter text="Introduzca su nombre:" [speed]="20" cursor=""></typewriter>
             </div>
             <div>
                 <input type="text" [(ngModel)]="this.nombre"
@@ -26,7 +26,7 @@
             <!-- Campo email -->
             <div id="email">
                 <div>
-                    <typewriter text="Introduzca su email:"></typewriter>
+                    <typewriter text="Introduzca su email:"  [speed]="20" cursor=""></typewriter>
                 </div>
                 <div>
                     <input type="email" [(ngModel)]="this.email"
@@ -41,7 +41,7 @@
                 <!-- Campo fecha nacimiento -->
                 <div id="fechaNacimiento">
                     <div>
-                        <typewriter text="Introduzca su fecha de nacimiento:"></typewriter>
+                        <typewriter text="Introduzca su fecha de nacimiento:" [speed]="20" cursor=""></typewriter>
                     </div>
                     <div>
                         <input type="date" [(ngModel)]="this.fechaNacimiento"
