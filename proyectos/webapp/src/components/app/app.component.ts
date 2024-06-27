@@ -1,5 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { UsuarioComponent } from "../usuario/usuario.component";
+import { UsuarioComponent } from "../prueba/usuario.component";
 import { TypewritterComponent } from "../typewritter/typewritter.component";
 import { SignupComponent } from '../signup/signup.component';
 
