@@ -77,7 +77,7 @@ export class UsuarioComponent {
           this.ERROR_EN_CARGA_DE_DATOS,
           this.ERROR_EN_GUARDADO_DE_DATOS,
           this.ESPERANDO_GUARDADO_DATOS
-        ], this.VISUALIZACION, () => this.visualizar());
+        ], this.VISUALIZACION);
         break;
       case INICIAR_CARGA_DATOS:
         this.ejecutarTransicion(this.INICIADO, this.ESPERANDO_DATOS, () => this.cargarUsuario());
@@ -122,9 +122,6 @@ export class UsuarioComponent {
         funcionAsociada();
   }
 
-  visualizar() {
-    throw new Error('Method not implemented.');
-  }
   cargarUsuario() {
     // Pedir los datos al servicio
     this.subscricion = this.usuariosService.getUsuario(this.datos as number).subscribe(

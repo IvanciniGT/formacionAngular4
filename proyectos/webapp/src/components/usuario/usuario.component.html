@@ -1,1 +1,27 @@
-<p>usuario works!</p>
+
+<div id="usuario">
+    @if( this.estado == this.ESPERANDO_DATOS ) {
+    }
+    @else if( this.estado == this.VISUALIZACION ) {
+    }
+    @else if( this.estado == this.EDICION 
+        || this.estado == this.ESPERANDO_GUARDADO_DATOS 
+        || this.estado == this.ERROR_EN_GUARDADO_DE_DATOS) {
+    }
+    @else if( this.estado == this.ERROR_EN_CARGA_DE_DATOS ) {
+    }
+
+<!--
+        @switch(this.estado){
+
+        @case( this.ESPERANDO_DATOS ) {    }
+        @case( this.VISUALIZACION ) {   }
+        @case(  this.EDICION ){     }
+        @case( this.ESPERANDO_GUARDADO_DATOS ){     }
+        @case( this.ERROR_EN_GUARDADO_DE_DATOS) {   }
+        @case(  this.ERROR_EN_CARGA_DE_DATOS ) {  }
+        @default {   }
+    }
+-->
+
+</div>
