@@ -70,13 +70,27 @@ const RESPUESTA_KO = 11;
                     *ngIf="this.estado !== EN_ESPERA_DE_FECHA_NACIMIENTO && this.estado !== FECHA_DE_NACIMIENTO_INVALIDA">
                     <!-- Confirmación -->
                     <div id="confirmacion">
-
-                    </div>
+                        <div>
+                            <typewriter text="Son los datos correctos?"></typewriter>
+                        </div>
+                        <div>
+                            <button (click)="this.confirmacionOK()">Si</button>
+                            <button (click)="this.confirmacionKO()">No</button>
+                        </div>
+                        </div>
 
                     <ng-container *ngIf="this.estado !== EN_ESPERA_DE_CONFIRMACION">
                         <!-- Respuesta -->
                         <div id="respuesta">
-
+                            <div id="esperando_respuesta" *ngIf="this.estado === EN_ESPERA_DE_RESPUESTA">
+                                <typewriter text="Espere mientras le damos de alta"></typewriter>
+                            </div>
+                            <div id="esperando_respuesta" *ngIf="this.estado === RESPUESTA_OK">
+                                <typewriter text="Se ha dado de alta correctamente"></typewriter>
+                            </div>
+                            <div id="esperando_respuesta" *ngIf="this.estado === RESPUESTA_KO">
+                                <typewriter text="Hubo un problema con su registro"></typewriter>
+                            </div>
                         </div>
                     </ng-container>
                 </ng-container>
