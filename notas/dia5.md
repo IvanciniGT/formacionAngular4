@@ -44,3 +44,18 @@ Que 2 componentes distintos puedan comunicarse entre si:
     Lucas   .....                           Antiñito    
     Felipe  .....                           Federico   
     Menchu  ..... [EDITAR] *
+
+# CORS (CRoss Origin Resource Sharing)
+
+Es una pseudo medida de protección que llevan los navegadores en colaboración con los servidores de Backend.
+
+Tengo un frontal: https://miapp.com
+Desde esa ruta lo carga mi navegador..
+
+Ahora , el frontal quiere hacer una petición a Bend https://aps.miempresa.com
+
+El navegador, pregunta al backend,su política de CORS... 
+El backend le manda los orígenes desde los que estaría bien que se le hicieran peticiones...
+
+El navegador mira si la ruta de la que descargamos el frontal: https://miapp.com está 
+en la lista de orígenes permitidos del backend... Si no lo está, no hace la petición (la corta) y me da un error en consola JS de cors.
