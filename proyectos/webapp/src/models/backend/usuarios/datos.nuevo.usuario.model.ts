@@ -1,5 +1,5 @@
 export class DatosNuevoUsuarioBackend {
-    nombre!:string;
+    name!:string;
     email!:string;
     fechaNacimiento!:string;
 }

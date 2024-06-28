@@ -1,21 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Usuario } from '../../models/usuarios/usuario.model';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { DatosNuevoUsuario } from '../../models/usuarios/datos.nuevo.usuario.model';
 import { UsuariosService } from './usuarios.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { UsuarioBackend } from '../../models/backend/usuarios/usuario.model';
+import { UsuarioMappers } from '../../mappers/usuarios/usuario.mappers';
+import { setThrowInvalidWriteToSignalError } from '@angular/core/primitives/signals';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsuariosServiceImpl extends UsuariosService{
 
-//  readonly URL_BASE = 'http://localhost:3000/usuarios';
-  private readonly URL_BASE = environment.apiUrl;
+  readonly URL_BASE = 'http://local host:3000/usuarios';
+//  private readonly URL_BASE = environment.apiUrl;
 
-  constructor(private clienteHttp: HttpClient) {
+  constructor(private clienteHttp: HttpClient,
+              private usuarioMapper: UsuarioMappers
+  ) {
     super();
   }
 
@@ -26,14 +30,32 @@ export class UsuariosServiceImpl extends UsuariosService{
   }
 
   getUsuario(id:number): Observable<Usuario> {
-    const mapeador;
     return this.clienteHttp.get<UsuarioBackend>(`${this.URL_BASE}/${id}`)
-          .pipe(map(mapeador));
-  }
-  saveUsuario(usuario: Usuario | undefined) : Observable<Usuario>{
-    return this.clienteHttp.put<Usuario>(`${this.URL_BASE}/${usuario?.id}`, usuario);
+          .pipe(map(this.usuarioMapper.usuarioBackend2Usuario))
+          // Map lo que hace es, partiendo de un observable de un tipo A
+          // Aplicar una función de mapeo para que devolvamos un observable de un tipo B
+          // Necesito discriminar entre:
+          // - Errores del servidor: 5?? El servicio no esta disponible. Intenta más tarde
+          // - Errores de cliente:   4?? Tus datos son una mierda.. revísalos
+          .pipe(catchError((error: HttpErrorResponse) => {
+            // Quizás aquí mando el error a mi servicio (frontal) de gestión de errores
+            if(error.status >= 500) {
+              return throwError(()=>'Error en el servidor');
+            }else if(error.status >= 400) {
+              return throwError(()=>'Error en los datos');
+            }else{
+              return throwError(()=>'Error desconocido');
+            }
+          }));
+
   }
 
+  saveUsuario(usuario: Usuario) : Observable<Usuario>{
+    const usuarioBackend = this.usuarioMapper.usuario2UsuarioBackend(usuario);
+    return this.clienteHttp.put<UsuarioBackend>(`${this.URL_BASE}/${usuario?.id}`, usuarioBackend)
+          .pipe(map(this.usuarioMapper.usuarioBackend2Usuario));
+
+  }
 
 }
 

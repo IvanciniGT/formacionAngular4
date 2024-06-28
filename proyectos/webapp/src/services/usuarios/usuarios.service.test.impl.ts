@@ -7,7 +7,7 @@ import { UsuariosService } from './usuarios.service';
 @Injectable({
   providedIn: 'root'
 })
-export class UsuariosServiceImpl extends UsuariosService{
+export class UsuariosServiceTestImpl extends UsuariosService{
 
   solicitarRegistro(datosDeAltaDeUsuario:DatosNuevoUsuario): Observable<void> {
     console.log("Llamando al servidor...")

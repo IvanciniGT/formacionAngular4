@@ -9,7 +9,8 @@ RESPONSABILIDAD     formulario Captura de datos                       Expone un 
 
 FLUJO DE DATOS
 Quiero poner BARRERAS DE CONTENCIÓN ante cambios en las comunicaciones
-                               DTO3        <->           DTO2        <->             DTO          <->  ENTITY
+                               DTO3     <-mapper->       DTO2        <->             DTO  <->  ENTITY
+                              Usuario               UsuarioBackend
 
 Cuál es la diferencia entre un DTO y un Entity?
 - La diferencia está en cómo se implementa el método .equals()

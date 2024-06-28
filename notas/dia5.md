@@ -71,3 +71,20 @@ Admiten validaciones... pero:
   Depende de lo que pueda tardar la validación.
   La diferencia en la definición está en que en lugar de dar [ null | ListaErrores ] una validacion ASÍNCRONA devuelve un Observable<null | ListaErrores>
   Si la validación puede tardar y bloquear la ejecución, mejor hacerla asíncrona.
+
+
+
+---
+
+App
+  Servicio:
+    Gestión de errores -> Recibe un error... y lo publica en un observable
+    Configuración
+    Usuario -> EXPLOTA EXPLOTA EXPLOTO -> Componente de modificación de usuario
+                                       -> Servicio de gestión de errores
+  
+  Componentes:
+    Formulario de login
+    Formulario de modificación de usuario -> Servicio de usuario (PUT) <- NO SE PUEDE !
+    Componente Velo Semitransparente <- Servicio de gestión de errores
+      ME MUESTRO !!!

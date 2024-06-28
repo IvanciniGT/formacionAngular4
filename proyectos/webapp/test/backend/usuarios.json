@@ -2,10 +2,10 @@
   "usuarios": [
     {
       "id": "1",
-      "nombre": "MArgarita",
       "email": "juan@juna.com",
+      "fechaAlta": "2019-01-01",
       "fechaNacimiento": "2000-01-01",
-      "fechaAlta": "2019-01-01"
+      "name": "Juancito"
     }
   ]
 }
