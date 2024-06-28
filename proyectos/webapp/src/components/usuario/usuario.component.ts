@@ -1,9 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Usuario } from '../../models/usuarios/usuario.model';
 import { UsuariosService } from '../../services/usuarios/usuarios.service';
-import { Subscription } from 'rxjs';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Observable, Subscription, of } from 'rxjs';
+import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AccionConfirmableComponent } from "../accion-confirmable/accion-confirmable.component";
 
 // Transiciones
 const INICIAR_CARGA_DATOS = 0; // INICIADO -> ESPERANDO_DATOS
@@ -16,11 +17,11 @@ const REINTENTAR_GUARDADO_DATOS = 6; // ERROR_EN_GUARDADO_DE_DATOS -> ERROR_EN_G
 const MARCAR_ERROR_EN_GUARDADO_DE_DATOS = 7; // ESPERANDO_GUARDADO_DATOS -> ERROR_EN_GUARDADO_DE_DATOS
 
 @Component({
-  selector: 'usuario',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './usuario.component.html',
-  styleUrl: './usuario.component.css'
+    selector: 'usuario',
+    standalone: true,
+    templateUrl: './usuario.component.html',
+    styleUrl: './usuario.component.css',
+    imports: [ReactiveFormsModule, CommonModule, AccionConfirmableComponent]
 })
 export class UsuarioComponent {
 
@@ -32,7 +33,7 @@ export class UsuarioComponent {
   readonly EDICION = 4;
   readonly ESPERANDO_GUARDADO_DATOS = 5;
   readonly ERROR_EN_GUARDADO_DE_DATOS = 6;
-  
+
   // Outputs
   @Output() usuarioCargado: EventEmitter<void> = new EventEmitter<void>();
   @Output() usuarioGuardado: EventEmitter<void> = new EventEmitter<void>();
@@ -60,8 +61,8 @@ export class UsuarioComponent {
   ngOnInit() {
     if (this.datos instanceof Usuario) { // Miro si me han mandado los datos (o un id numérico)
       this.usuario = this.datos;
-      this.transicionar(this.modoPorDefecto=="VISUALIZACION" ? VISUALIZAR: EDITAR);
-    }else{ // Pues no.. lo que me han pasado es un numero.
+      this.transicionar(this.modoPorDefecto == "VISUALIZACION" ? VISUALIZAR : EDITAR);
+    } else { // Pues no.. lo que me han pasado es un numero.
       this.transicionar(INICIAR_CARGA_DATOS);
     }
   }
@@ -71,11 +72,11 @@ export class UsuarioComponent {
   }
 
   configurarFormulario() { // Aquí defino la lógica del formulario. En el HTML definiré la vista del formulario
-                           // Vamos a hacer algo parecido al ngModel... pero... ngModel lo Aplico a cada campo
+    // Vamos a hacer algo parecido al ngModel... pero... ngModel lo Aplico a cada campo
     this.formulario = this.formBuilder.group({
-      nombre: [this.usuario!.nombre, [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z ]+$/)]], 
+      nombre: [this.usuario!.nombre, [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z ]+$/)]],
       email: [this.usuario!.email, [Validators.required, Validators.email]],
-      fechaNacimiento: [this.usuario!.fechaNacimiento, [Validators.required, Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)]]
+      fechaNacimiento: [this.usuario!.fechaNacimiento, [Validators.required]] //, UsuarioComponent.validarCampoFecha]]
     });
     //this.subscricion.add(this.formulario.valueChanges.subscribe(() => { // Cada vez que algo cambie en el form... actualizo lo que necesite o ejecuto algo)
     //}));
@@ -119,7 +120,7 @@ export class UsuarioComponent {
       case MARCAR_ERROR_EN_GUARDADO_DE_DATOS:
         this.ejecutarTransicion(this.ESPERANDO_GUARDADO_DATOS, this.ERROR_EN_GUARDADO_DE_DATOS);
         break;
-      }
+    }
   }
 
   private ejecutarTransicion(estadoEsperado: number | number[], estadoDestino: number, funcionAsociada?: Function) {
@@ -132,8 +133,8 @@ export class UsuarioComponent {
       throw new Error("No se puede transicionar de " + this.estado + " a " + estadoDestino);
     }
     this.estado = estadoDestino;
-    if(funcionAsociada!== undefined)
-        funcionAsociada();
+    if (funcionAsociada !== undefined)
+      funcionAsociada();
   }
 
   cargarUsuario() {
@@ -143,7 +144,7 @@ export class UsuarioComponent {
         next: (usuario: Usuario) => {
           this.usuario = usuario;
           this.usuarioCargado.emit();
-          this.transicionar(this.modoPorDefecto=="VISUALIZACION" ? VISUALIZAR: EDITAR);
+          this.transicionar(this.modoPorDefecto == "VISUALIZACION" ? VISUALIZAR : EDITAR);
         },
         error: (error: any) => {
           this.motivoError = error;
@@ -178,22 +179,40 @@ export class UsuarioComponent {
       }));
   }
 
-  comenzarEdicion(){ // Cuando aprietan el botón de editar
+  comenzarEdicion() { // Cuando aprietan el botón de editar
     this.configurarFormulario();
     this.transicionar(EDITAR);
     this.edicionIniciada.emit();
   }
-  cancelarEdicion(){ // Cuando aprietan el botón de cancelar
+  cancelarEdicion() { // Cuando aprietan el botón de cancelar
     this.transicionar(VISUALIZAR);
     this.edicionCancelada.emit();
   }
-  guardar(){ // Cuando aprietan el botón de guardar
+  guardar() { // Cuando aprietan el botón de guardar
     this.transicionar(GUARDAR_DATOS);
   }
-  solicitarReinitentarCarga(){ // Cuando aprietan el botón de reintentar
+  solicitarReinitentarCarga() { // Cuando aprietan el botón de reintentar
     this.transicionar(REINTENTAR_CARGA_DATOS);
   }
-  solicitarReintentoDeGuardado(){ // Cuando aprietan el botón de reintentar
+  solicitarReintentoDeGuardado() { // Cuando aprietan el botón de reintentar
     this.transicionar(REINTENTAR_GUARDADO_DATOS);
+  }
+
+
+                          // Representa un campo de un formulario reactivo
+  static validarCampoFecha(campoConFecha: AbstractControl): Observable<ValidationErrors | null>{
+    console.log("Validando fecha", campoConFecha.value)
+    var aDevolver:ValidationErrors | null= null
+    if(campoConFecha.value && !UsuarioComponent.validarFecha(campoConFecha.value))
+      aDevolver = {fechaPasada:true}
+    return of(aDevolver)
+  }
+  static validarFecha(fechaComoTexto: string): boolean {
+    try {
+      const resultado = Date.parse(fechaComoTexto) < Date.now();
+      return resultado;
+    } catch (error) {
+      return false;
+    }
   }
 }
