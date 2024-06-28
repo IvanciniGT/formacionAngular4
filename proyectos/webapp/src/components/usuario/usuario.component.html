@@ -1,5 +1,6 @@
 
 <div id="usuario">
+
     @if( this.estado == this.ESPERANDO_DATOS ) {
         <div id="cargando"> Esperando datos </div>
     }
@@ -9,12 +10,51 @@
             <div> <span>Email</span> {{this.usuario!.email}} </div>
             <div> <span>Fecha de nacimiento</span> {{this.usuario!.fechaNacimiento}} </div>
             <div> <span>Fecha de alta</span> {{this.usuario!.fechaAlta}} </div>
-            <button *ngif="this.editable" (click)="this.comenzarEdicion()">Editar</button>
+            <button *ngIf="this.editable" (click)="this.comenzarEdicion()">Editar</button>
         </div>
     }
     @else if( this.estado == this.EDICION 
         || this.estado == this.ESPERANDO_GUARDADO_DATOS 
         || this.estado == this.ERROR_EN_GUARDADO_DE_DATOS) {
+
+            <div id="formulario">
+                <form [formGroup]="this.formulario">
+                    <div [ngClass]="{'error': !this.formulario.get('nombre')?.valid }">
+                        <span>Nombre</span> <input type="text" formControlName="nombre" />
+                        <div class="error" *ngIf="this.formulario.get('nombre')?.errors?.['required']"> El nombre es requerido </div>
+                        <div class="error" *ngIf="this.formulario.get('nombre')?.errors?.['minlength']"> El nombre debe tener al menos 3 caracteres </div>
+                        <div class="error" *ngIf="this.formulario.get('nombre')?.errors?.['maxlength']"> El nombre no puede tener más de 20 caracteres </div>
+                        <div class="error" *ngIf="this.formulario.get('nombre')?.errors?.['pattern']"> El nombre solo puede contener letras y espacios </div>
+                    </div>
+                    <div>
+                        <span>Email</span> <input type="text" formControlName="email" />
+                        <div class="error" *ngIf="this.formulario.get('email')?.errors?.['required']"> El email es requerido </div>
+                        <div class="error" *ngIf="this.formulario.get('email')?.errors?.['email']"> El email no es válido </div>
+                    </div>
+                    <div> 
+                        <span>Fecha de nacimiento</span> <input type="date" formControlName="fechaNacimiento" /> 
+                        <div class="error" *ngIf="this.formulario.get('fechaNacimiento')?.errors?.['required']"> La fecha de nacimiento es requerida </div>
+                    </div>
+                    <div> <span>Fecha de alta</span> {{this.usuario!.fechaAlta}} </div>
+                </form>
+                @if( this.estado == this.EDICION ) {
+                    <button [disabled]="!this.formulario.dirty || !this.formulario.valid" (click)="this.guardar()">Guardar</button>
+                    <button (click)="this.cancelarEdicion()">Cancelar</button> <!--TODO: Solicitar confirmación si esta sucio-->
+                }
+                @else if( this.estado == this.ESPERANDO_GUARDADO_DATOS ) {
+                    <div id="cargando"> Guardando datos </div>
+                }
+                @else if( this.estado == this.ERROR_EN_GUARDADO_DE_DATOS ) {
+                    <div id="errorGuardado">
+                        <div> Error al guardar datos </div>
+                        <button (click)="this.solicitarReintentoDeGuardado()">Reintentar</button>
+                        <button (click)="this.cancelarEdicion()">Cancelar</button>
+                    </div>
+                }
+        </div>
+
+
+
     }
     @else if( this.estado == this.ERROR_EN_CARGA_DE_DATOS ) {
         <div id="errorCarga">
@@ -22,7 +62,6 @@
             <button (click)="this.solicitarReinitentarCarga()">Reintentar</button>
         </div>
     }
-
 <!--
         @switch(this.estado){
 

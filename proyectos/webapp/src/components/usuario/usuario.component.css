@@ -1,0 +1,8 @@
+div >.error{
+    color: #f20505;
+    font-size: 0.8em;
+}
+
+form div.error span{
+    color: #f20505;
+}

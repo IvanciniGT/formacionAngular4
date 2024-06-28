@@ -36,12 +36,19 @@ export class UsuariosServiceImpl extends UsuariosService{
       setTimeout(() => {
         observer.next(usuario); // Mando valor... en nuestro caso ninguna valor: Solo mandamos un HE ACABADO!
         observer.complete();
-      }, 5000);
+        //observer.error("Error en la carga de datos. El servidor esta caido");
+      }, 1000);
     });
   }
   saveUsuario(usuario: Usuario | undefined) : Observable<Usuario>{
-    return Observable.create();
-  }
+    
+    return new Observable( observer => {
+      setTimeout(() => {
+        observer.next(usuario); // Mando valor... en nuestro caso ninguna valor: Solo mandamos un HE ACABADO!
+        observer.complete();
+        //observer.error("Error en el guardado de datos. El servidor esta caido");
+      }, 4000);
+    });  }
 
 
 }

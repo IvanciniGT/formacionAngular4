@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Usuario } from '../../models/usuarios/usuario.model';
 import { UsuariosService } from '../../services/usuarios/usuarios.service';
 import { Subscription } from 'rxjs';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 // Transiciones
 const INICIAR_CARGA_DATOS = 0; // INICIADO -> ESPERANDO_DATOS
@@ -16,7 +18,7 @@ const MARCAR_ERROR_EN_GUARDADO_DE_DATOS = 7; // ESPERANDO_GUARDADO_DATOS -> ERRO
 @Component({
   selector: 'usuario',
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './usuario.component.html',
   styleUrl: './usuario.component.css'
 })
@@ -48,9 +50,10 @@ export class UsuarioComponent {
   estado: number;
   motivoError?: string;
   usuario?: Usuario;    // Con este trabajo... Lo relleno desde el input datos (si me pasan un Usuario) o desde el servicio (si me pasan un número)
-  subscricion: Subscription | undefined;
+  subscricion: Subscription = new Subscription();
+  formulario!: FormGroup;
 
-  constructor(private usuariosService: UsuariosService) {
+  constructor(private usuariosService: UsuariosService, private formBuilder: FormBuilder) {
     this.estado = this.INICIADO;
   }
 
@@ -65,6 +68,17 @@ export class UsuarioComponent {
 
   ngOnDestoy() {
     this.subscricion?.unsubscribe();
+  }
+
+  configurarFormulario() { // Aquí defino la lógica del formulario. En el HTML definiré la vista del formulario
+                           // Vamos a hacer algo parecido al ngModel... pero... ngModel lo Aplico a cada campo
+    this.formulario = this.formBuilder.group({
+      nombre: [this.usuario!.nombre, [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z ]+$/)]], 
+      email: [this.usuario!.email, [Validators.required, Validators.email]],
+      fechaNacimiento: [this.usuario!.fechaNacimiento, [Validators.required, Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)]]
+    });
+    //this.subscricion.add(this.formulario.valueChanges.subscribe(() => { // Cada vez que algo cambie en el form... actualizo lo que necesite o ejecuto algo)
+    //}));
   }
 
   private transicionar(transicion: number) {
@@ -124,7 +138,7 @@ export class UsuarioComponent {
 
   cargarUsuario() {
     // Pedir los datos al servicio
-    this.subscricion = this.usuariosService.getUsuario(this.datos as number).subscribe(
+    this.subscricion.add(this.usuariosService.getUsuario(this.datos as number).subscribe(
       {
         next: (usuario: Usuario) => {
           this.usuario = usuario;
@@ -136,11 +150,20 @@ export class UsuarioComponent {
           this.errorCarga.emit(error);
           this.transicionar(MARCAR_ERROR_EN_CARGA_DE_DATOS);
         }
-      });
+      }));
   }
   guardarUsuario() {
     // Pedir los datos al servicio
-    this.subscricion = this.usuariosService.saveUsuario(this.usuario).subscribe(
+    const datosAMandar = { ...this.usuario, ...this.formulario.value } as Usuario;
+    // Usuario copiaDelUsuarioAnterior= new Usuario();
+    // copiaDelUsuarioAnterior.setId(usuarioAnterior.getId())
+    // copiaDelUsuarioAnterior.setFechaAlta(usuarioAnterior.getFechaAlta())
+    // copiaDelUsuarioAnterior.setNombre( this.formulario.value.getNombre() )
+    // copiaDelUsuarioAnterior.setEmail( this.formulario.value.getEmail() )
+    // copiaDelUsuarioAnterior.setFechaNacimiento( this.formulario.value.getFechaNacimiento() )
+
+
+    this.subscricion.add(this.usuariosService.saveUsuario(datosAMandar).subscribe(
       {
         next: (usuario: Usuario) => {
           this.usuario = usuario;
@@ -152,10 +175,11 @@ export class UsuarioComponent {
           this.errorGuardado.emit(error);
           this.transicionar(MARCAR_ERROR_EN_GUARDADO_DE_DATOS);
         }
-      });
+      }));
   }
 
   comenzarEdicion(){ // Cuando aprietan el botón de editar
+    this.configurarFormulario();
     this.transicionar(EDITAR);
     this.edicionIniciada.emit();
   }
@@ -169,7 +193,7 @@ export class UsuarioComponent {
   solicitarReinitentarCarga(){ // Cuando aprietan el botón de reintentar
     this.transicionar(REINTENTAR_CARGA_DATOS);
   }
-  solicitarGuardado(){ // Cuando aprietan el botón de reintentar
+  solicitarReintentoDeGuardado(){ // Cuando aprietan el botón de reintentar
     this.transicionar(REINTENTAR_GUARDADO_DATOS);
   }
 }
