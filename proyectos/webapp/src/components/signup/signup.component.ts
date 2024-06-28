@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild, afterRender } from '@angular/core';
 import { UsuariosService } from '../../services/usuarios/usuarios.service';
 import { DatosNuevoUsuario } from '../../models/usuarios/datos.nuevo.usuario.model';
 import { Subscription } from 'rxjs';
@@ -53,11 +53,19 @@ export class SignupComponent {
   subscripcion: Subscription | undefined;
   //private usuariosService: UsuariosService;
 
+  // Lo que quiero es capturar el elemento HTML que tiene el nombre #campoNombre
+  @ViewChild('campoNombre') campoNombre!: ElementRef;
+
   constructor(private usuariosService: UsuariosService) { // Inyeccion de depencias. 
                                                   // Que cuando Angular cree una instancia de este componente
                                                   // Me entregue una instancia de UsuariosService... Con la implementación que sea... me la pela !
     this.estado = this.INICIO;
     //this.usuariosService = usuariosService;
+    afterRender(()=>{
+      if(this.estado === this.EN_ESPERA_DE_NOMBRE || this.estado === this.NOMBRE_INVALIDO){
+        this.campoNombre.nativeElement.focus();
+      }
+    });
   }
 
   ngOnInit() {
@@ -67,6 +75,8 @@ export class SignupComponent {
   ngOnDestroy() {
     this.subscripcion?.unsubscribe(); // Caso que el usuario salga prematuramente de la página mientras se está enviando la petición al servidor
   }
+
+  //ngAfterViewInit() {
 
   private transicionar(transicion: number) {
     switch (transicion) {
@@ -157,6 +167,9 @@ export class SignupComponent {
   }
 
   validarElNombre(){
+                                   // Accedo al Input HTML que tiene el nombre #campoNombre
+                                  // vvvvvvvvv
+    this.nombre = this.campoNombre.nativeElement.value;
     if(this.nombre?.match(/^(\s?[a-zA-Z0-9]{4,20})+$/)){
       this.transicionar(PEDIR_EMAIL);
     } else {
@@ -164,7 +177,8 @@ export class SignupComponent {
     }
   }
 
-  validarElEmail(){
+  validarElEmail(email:string){
+    this.email = email;
     if(this.email?.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/)){
       this.transicionar(PEDIR_FECHA_NACIMIENTO);
     }else{

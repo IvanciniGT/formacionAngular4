@@ -24,7 +24,20 @@ export class UsuariosServiceImpl extends UsuariosService{
   }
 
   getUsuario(id:number): Observable<Usuario> {
-    return Observable.create();
+    // Me creo una de juguete
+    const usuario = {
+      "nombre": "Pepe",
+      "email": "pepe@pepe.com",
+      "fechaNacimiento": "1980-01-01",
+      "fechaAlta": "2021-01-01",
+      "id": id
+    } as Usuario;
+    return new Observable( observer => {
+      setTimeout(() => {
+        observer.next(usuario); // Mando valor... en nuestro caso ninguna valor: Solo mandamos un HE ACABADO!
+        observer.complete();
+      }, 5000);
+    });
   }
   saveUsuario(usuario: Usuario | undefined) : Observable<Usuario>{
     return Observable.create();

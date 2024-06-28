@@ -2,6 +2,7 @@ import { AfterViewInit, Component } from '@angular/core';
 import { PruebaComponent } from "../prueba/prueba.component";
 import { TypewritterComponent } from "../typewritter/typewritter.component";
 import { SignupComponent } from '../signup/signup.component';
+import { UsuarioComponent } from "../usuario/usuario.component";
 
 // Esta anonotación le dice a Angular que esta clase es un componente: LENGUAJE DECLARATIVO
 @Component({
@@ -9,7 +10,7 @@ import { SignupComponent } from '../signup/signup.component';
     standalone: true, // (1)
     templateUrl: './app.component.html', // Indico la plantilla que usaré para RENDERIZAR este componente
     styleUrl: './app.component.css',
-    imports: [PruebaComponent, TypewritterComponent, SignupComponent]
+    imports: [PruebaComponent, TypewritterComponent, SignupComponent, UsuarioComponent]
 })
 // Aquí va la lógica del componente
 export class AppComponent /*implements AfterViewInit*/{

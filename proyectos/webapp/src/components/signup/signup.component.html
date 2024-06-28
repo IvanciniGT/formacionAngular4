@@ -15,7 +15,7 @@
                     <typewriter text="Introduzca su nombre:" [speed]="20" cursor=""></typewriter>
                 </div>
                 <div>
-                    <input type="text" [(ngModel)]="this.nombre"
+                    <input type="text" #campoNombre
                         [readonly]="this.estado !== EN_ESPERA_DE_NOMBRE && this.estado !== NOMBRE_INVALIDO">
                     <span *ngIf="this.estado !== EN_ESPERA_DE_NOMBRE && this.estado !== NOMBRE_INVALIDO"
                         class="ok">√</span>
@@ -33,12 +33,12 @@
                         <typewriter text="Introduzca su email:" [speed]="20" cursor=""></typewriter>
                     </div>
                     <div>
-                        <input type="email" [(ngModel)]="this.email"
+                        <input type="email" [(ngModel)]="this.email" #campoEmail
                             [readonly]="this.estado !== EN_ESPERA_DE_EMAIL && this.estado !== EMAIL_INVALIDO">
                         <span *ngIf="this.estado !== EN_ESPERA_DE_EMAIL && this.estado !== EMAIL_INVALIDO"
                             class="ok">√</span>
                         <button *ngIf="this.estado === EN_ESPERA_DE_EMAIL || this.estado === EMAIL_INVALIDO"
-                            (click)="this.validarElEmail()">Continuar</button>
+                            (click)="this.validarElEmail(campoEmail.value)">Continuar</button>
                         <br><span *ngIf="this.estado === EMAIL_INVALIDO" class="error">El email no es correcto</span>
                     </div>
                 </div>

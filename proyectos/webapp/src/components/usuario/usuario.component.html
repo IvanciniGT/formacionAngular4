@@ -1,14 +1,26 @@
 
 <div id="usuario">
     @if( this.estado == this.ESPERANDO_DATOS ) {
+        <div id="cargando"> Esperando datos </div>
     }
     @else if( this.estado == this.VISUALIZACION ) {
+        <div id="datos">
+            <div> <span>Nombre</span> {{this.usuario!.nombre}} </div>
+            <div> <span>Email</span> {{this.usuario!.email}} </div>
+            <div> <span>Fecha de nacimiento</span> {{this.usuario!.fechaNacimiento}} </div>
+            <div> <span>Fecha de alta</span> {{this.usuario!.fechaAlta}} </div>
+            <button *ngif="this.editable" (click)="this.comenzarEdicion()">Editar</button>
+        </div>
     }
     @else if( this.estado == this.EDICION 
         || this.estado == this.ESPERANDO_GUARDADO_DATOS 
         || this.estado == this.ERROR_EN_GUARDADO_DE_DATOS) {
     }
     @else if( this.estado == this.ERROR_EN_CARGA_DE_DATOS ) {
+        <div id="errorCarga">
+            <div> Error al cargar datos </div>
+            <button (click)="this.solicitarReinitentarCarga()">Reintentar</button>
+        </div>
     }
 
 <!--
