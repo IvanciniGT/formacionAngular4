@@ -3,15 +3,16 @@ import { Usuario } from '../../models/usuarios/usuario.model';
 import { Observable } from 'rxjs';
 import { DatosNuevoUsuario } from '../../models/usuarios/datos.nuevo.usuario.model';
 import { UsuariosService } from './usuarios.service';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-//imports: [HttpClientModule]
 export class UsuariosServiceImpl extends UsuariosService{
 
-  readonly URL_BASE = 'http://localhost:3000/usuarios';
+//  readonly URL_BASE = 'http://localhost:3000/usuarios';
+  private readonly URL_BASE = environment.apiUrl;
 
   constructor(private clienteHttp: HttpClient) {
     super();

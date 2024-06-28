@@ -59,3 +59,15 @@ El backend le manda los orígenes desde los que estaría bien que se le hicieran
 
 El navegador mira si la ruta de la que descargamos el frontal: https://miapp.com está 
 en la lista de orígenes permitidos del backend... Si no lo está, no hace la petición (la corta) y me da un error en consola JS de cors.
+
+
+---
+
+Formularios reactivos en Angular
+
+Admiten validaciones... pero:
+- Las puedo poner a nivel de campo o a nivel de formulario: Hay veces que no quiero validar un campo... sino una combinación de campos: Tal dato de un campo tiene que ser mayor que tal dato de otro campo.
+- Cualquier validación puede realizarse de forma síncrona o asíncrona.
+  Depende de lo que pueda tardar la validación.
+  La diferencia en la definición está en que en lugar de dar [ null | ListaErrores ] una validacion ASÍNCRONA devuelve un Observable<null | ListaErrores>
+  Si la validación puede tardar y bloquear la ejecución, mejor hacerla asíncrona.

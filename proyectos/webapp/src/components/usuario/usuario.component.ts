@@ -17,11 +17,11 @@ const REINTENTAR_GUARDADO_DATOS = 6; // ERROR_EN_GUARDADO_DE_DATOS -> ERROR_EN_G
 const MARCAR_ERROR_EN_GUARDADO_DE_DATOS = 7; // ESPERANDO_GUARDADO_DATOS -> ERROR_EN_GUARDADO_DE_DATOS
 
 @Component({
-    selector: 'usuario',
-    standalone: true,
-    templateUrl: './usuario.component.html',
-    styleUrl: './usuario.component.css',
-    imports: [ReactiveFormsModule, CommonModule, AccionConfirmableComponent]
+  selector: 'usuario',
+  standalone: true,
+  templateUrl: './usuario.component.html',
+  styleUrl: './usuario.component.css',
+  imports: [ReactiveFormsModule, CommonModule, AccionConfirmableComponent]
 })
 export class UsuarioComponent {
 
@@ -76,7 +76,8 @@ export class UsuarioComponent {
     this.formulario = this.formBuilder.group({
       nombre: [this.usuario!.nombre, [Validators.required, Validators.minLength(3), Validators.maxLength(20), Validators.pattern(/^[a-zA-Z ]+$/)]],
       email: [this.usuario!.email, [Validators.required, Validators.email]],
-      fechaNacimiento: [this.usuario!.fechaNacimiento, [Validators.required]] //, UsuarioComponent.validarCampoFecha]]
+      fechaNacimiento: [this.usuario!.fechaNacimiento, [Validators.required, UsuarioComponent.validarCampoFecha]]//, [UsuarioComponent.validarCampoFechaAsincrona]]
+      // SINCRONAS          ASINCRONA
     });
     //this.subscricion.add(this.formulario.valueChanges.subscribe(() => { // Cada vez que algo cambie en el form... actualizo lo que necesite o ejecuto algo)
     //}));
@@ -199,12 +200,12 @@ export class UsuarioComponent {
   }
 
 
-                          // Representa un campo de un formulario reactivo
-  static validarCampoFecha(campoConFecha: AbstractControl): Observable<ValidationErrors | null>{
-    console.log("Validando fecha", campoConFecha.value)
-    var aDevolver:ValidationErrors | null= null
-    if(campoConFecha.value && !UsuarioComponent.validarFecha(campoConFecha.value))
-      aDevolver = {fechaPasada:true}
+  // Representa un campo de un formulario reactivo
+/*
+  static validarCampoFechaAsincrona(campoConFecha: AbstractControl): Observable<ValidationErrors | null> {
+    var aDevolver: ValidationErrors | null = null
+    if (campoConFecha.value && !UsuarioComponent.validarFecha(campoConFecha.value))
+      aDevolver = { fechaPasada: true }
     return of(aDevolver)
   }
   static validarFecha(fechaComoTexto: string): boolean {
@@ -214,5 +215,22 @@ export class UsuarioComponent {
     } catch (error) {
       return false;
     }
+  }*/
+
+
+  static validarCampoFecha(campoConFecha: AbstractControl): ValidationErrors | null {
+    var aDevolver: ValidationErrors | null = null
+    if (campoConFecha.value && !UsuarioComponent.validarFecha(campoConFecha.value))
+      aDevolver = { fechaPasada: true }
+    return aDevolver
   }
+  static validarFecha(fechaComoTexto: string): boolean {
+    try {
+      const resultado = Date.parse(fechaComoTexto) < Date.now();
+      return resultado;
+    } catch (error) {
+      return false;
+    }
+  }
+
 }
