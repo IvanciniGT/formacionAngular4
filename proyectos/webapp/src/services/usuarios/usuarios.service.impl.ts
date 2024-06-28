@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Usuario } from '../../models/usuarios/usuario.model';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { DatosNuevoUsuario } from '../../models/usuarios/datos.nuevo.usuario.model';
 import { UsuariosService } from './usuarios.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { UsuarioBackend } from '../../models/backend/usuarios/usuario.model';
 
 @Injectable({
   providedIn: 'root',
@@ -25,9 +26,9 @@ export class UsuariosServiceImpl extends UsuariosService{
   }
 
   getUsuario(id:number): Observable<Usuario> {
-
-    return this.clienteHttp.get<Usuario>(`${this.URL_BASE}/${id}`);
-
+    const mapeador;
+    return this.clienteHttp.get<UsuarioBackend>(`${this.URL_BASE}/${id}`)
+          .pipe(map(mapeador));
   }
   saveUsuario(usuario: Usuario | undefined) : Observable<Usuario>{
     return this.clienteHttp.put<Usuario>(`${this.URL_BASE}/${usuario?.id}`, usuario);
